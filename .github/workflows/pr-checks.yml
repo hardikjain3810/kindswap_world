@@ -24,11 +24,10 @@ jobs:
     strategy:
       matrix:
         service:
-          # NOTE: backend/ and frontend/ directories do not have package.json files
-          # (source code is in subdirectories: kindsoul-b, KindSoul-F)
-          # These are built via Docker from their Dockerfile context paths
-          # To include them in this matrix, first populate backend/ and frontend/ with package.json
-          # For now, only audit the admin services which have package.json files
+          - name: backend
+            path: 'backend/kindsoul-b'
+          - name: frontend
+            path: 'frontend/KindSoul-F'
           - name: admin-backend
             path: 'admin backend/Admin-Backend'
           - name: admin-frontend
