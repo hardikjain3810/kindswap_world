@@ -1,45 +1,65 @@
-# ============================================================
-# Stage 1: Build
-# Use node:20-slim for the build stage
-# The build output is a static directory — no Node.js at runtime
-# ============================================================
-FROM node:20-slim AS build
+# ---------- Build stage ---------
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --prefer-offline
+# Install required build tools
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    gcc \
+    libusb-1.0-0-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy source code
+# Copy dependency files first (better caching)
+COPY package.json package-lock.json ./
+
+# Install dependencies (clean, fast, reliable)
+RUN npm ci --legacy-peer-deps
+
+# Copy project files
 COPY . .
 
-# Vite production build — outputs to dist/
+# Build arguments for Sentry
+ARG SENTRY_AUTH_TOKEN
+ARG VITE_APP_VERSION
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+
+# Build production bundle
 RUN npm run build
 
-# ============================================================
-# Stage 2: Production runtime (nginx:alpine)
-# The frontend is a static SPA — served by Nginx
-# No Node.js required at runtime — nginx:alpine is correct here
-# KindSwap frontend is a client-side React SPA (Vite)
-# — NOT Next.js, NOT RSC, NOT server-side rendering
-# This confirms no React Server Components vulnerabilities apply
-# ============================================================
-FROM nginx:alpine AS runtime
+# Upload source maps to Sentry (only if token provided)
+RUN if [ -n "$SENTRY_AUTH_TOKEN" ]; then \
+      echo "Uploading source maps to Sentry..."; \
+      npx @sentry/cli sourcemaps inject ./dist && \
+      npx @sentry/cli sourcemaps upload ./dist \
+        --release=kindswap-frontend@${VITE_APP_VERSION} \
+        --org=kindswap \
+        --project=kindswap-frontend && \
+      echo "Source maps uploaded successfully"; \
+    else \
+      echo "SENTRY_AUTH_TOKEN not provided, skipping source map upload"; \
+    fi
 
-# Remove default nginx config
+# SECURITY: Remove source maps before copying to production image
+# Maps are already uploaded to Sentry, no need to keep them in container
+RUN find ./dist -name "*.map" -type f -delete && \
+    echo "Source maps removed from build artifacts"
+
+
+# ---------- Production stage ----------
+FROM nginx:alpine
+
+# Remove default config
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy Vite build output from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built files from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Nginx serves on port 80
 EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

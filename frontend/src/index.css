@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 50% 5%;
+    --foreground: 185 60% 95%;
+
+    --card: 210 50% 8%;
+    --card-foreground: 185 60% 95%;
+
+    --popover: 210 50% 8%;
+    --popover-foreground: 185 60% 95%;
+
+    --primary: 185 80% 55%;
+    --primary-foreground: 210 50% 5%;
+
+    --secondary: 165 70% 45%;
+    --secondary-foreground: 185 60% 95%;
+
+    --muted: 210 35% 15%;
+    --muted-foreground: 200 25% 55%;
+
+    --accent: 195 90% 60%;
+    --accent-foreground: 210 50% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 35% 18%;
+    --input: 210 35% 15%;
+    --ring: 185 80% 55%;
+
+    --radius: 0.75rem;
+
+    /* Ocean Depths colors */
+    --ocean-deep: 210 80% 25%;
+    --ocean-cyan: 185 80% 55%;
+    --ocean-seafoam: 165 70% 45%;
+    --ocean-light: 195 90% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(185 80% 55%) 0%, hsl(195 90% 60%) 50%, hsl(165 70% 45%) 100%);
+    --gradient-glow: linear-gradient(135deg, hsl(185 80% 55% / 0.3) 0%, hsl(165 70% 45% / 0.3) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(210 50% 10% / 0.8) 0%, hsl(210 50% 8% / 0.9) 100%);
+    
+    /* Glass effect */
+    --glass-bg: hsl(210 50% 10% / 0.6);
+    --glass-border: hsl(185 60% 95% / 0.1);
+    
+    /* Shadows */
+    --shadow-glow-cyan: 0 0 60px hsl(185 80% 55% / 0.3);
+    --shadow-glow-seafoam: 0 0 60px hsl(165 70% 45% / 0.3);
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.3);
+
+    --sidebar-background: 210 50% 5%;
+    --sidebar-foreground: 185 60% 95%;
+    --sidebar-primary: 185 80% 55%;
+    --sidebar-primary-foreground: 210 50% 5%;
+    --sidebar-accent: 210 35% 15%;
+    --sidebar-accent-foreground: 185 60% 95%;
+    --sidebar-border: 210 35% 18%;
+    --sidebar-ring: 185 80% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Sora', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply backdrop-blur-xl border border-glass rounded-2xl;
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(185 80% 55%) 0%, hsl(195 90% 60%) 50%, hsl(165 70% 45%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-border {
+    @apply relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl p-[1px];
+    background: var(--gradient-primary);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .glow-cyan {
+    box-shadow: var(--shadow-glow-cyan);
+  }
+
+  .glow-seafoam {
+    box-shadow: var(--shadow-glow-seafoam);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Hide scrollbar but keep scroll functionality */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Visible scrollbar for specific elements */
+.scrollbar-visible {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  display: block;
+  height: 8px;
+  width: 8px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 4px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: hsl(185 80% 55% / 0.3);
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: hsl(185 80% 55% / 0.5);
+}

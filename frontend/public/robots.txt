@@ -1,0 +1,35 @@
+User-agent: Googlebot
+Allow: /
+Disallow: /swap-spec
+Disallow: /dev-spec
+Disallow: /impact-dashboard
+Disallow: /portfolio
+Disallow: /perps
+
+User-agent: Bingbot
+Allow: /
+Disallow: /swap-spec
+Disallow: /dev-spec
+Disallow: /impact-dashboard
+Disallow: /perps
+
+User-agent: Twitterbot
+Allow: /
+Disallow: /swap-spec
+Disallow: /dev-spec
+Disallow: /impact-dashboard
+Disallow: /perps
+
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /swap-spec
+Disallow: /dev-spec
+Disallow: /impact-dashboard
+Disallow: /perps
+
+User-agent: *
+Allow: /
+Disallow: /swap-spec
+Disallow: /dev-spec
+Disallow: /impact-dashboard
+Disallow: /perps

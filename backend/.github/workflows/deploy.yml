@@ -1,0 +1,50 @@
+name: Deploy KindSoul-B
+
+on:
+  push:
+    branches:
+      - pre-production
+
+jobs:
+
+  deploy-pre-prod:
+    runs-on: [self-hosted, pre-prod]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy on Server 1
+        run: |
+          echo "${{ secrets.PRO_ENV }}" > .env
+          rsync -av --delete --exclude ".git" --exclude ".github" ./ /var/www/html/kindsoul-b/
+
+          docker stop kindsoul-b || true
+          docker rm kindsoul-b || true
+
+          docker build -t kindsoul-b /var/www/html/kindsoul-b
+
+          docker run -d \
+            --name kindsoul-b \
+            -p 3000:5000 \
+            --env-file /var/www/html/kindsoul-b/.env \
+            --restart unless-stopped \
+            kindsoul-b
+
+      - name: Wait and Health Check (Prod-1)
+        run: |
+          echo "Waiting for container to start..."
+          sleep 5
+
+          echo "Checking health endpoint..."
+          for i in {1..10}; do
+            if curl -f http://localhost:3000/health; then
+              echo "Health check passed."
+              exit 0
+            fi
+            echo "Retrying..."
+            sleep 3
+          done
+
+          echo "Health check failed!"
+          exit 1

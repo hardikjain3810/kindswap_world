@@ -1,0 +1,1671 @@
+{
+  "info": {
+    "_postman_id": "kindswap-api",
+    "name": "KindSwap API",
+    "description": "Complete collection for testing KindSwap API - Swap, Points, and Fee Configuration endpoints.\n\nFEE SPLIT MODEL (charityPortion=0.25, kindswapPortion=0.75):\n- Total Fee = effectiveFeeBps (max 0.1% = 10 bps)\n- Charity = Total Fee × charityPortion (25% of fee)\n- KindSwap = Total Fee × kindswapPortion (75% of fee)\n- charityPortion + kindswapPortion = 1.0\n\nExample: $100 swap at No Tier (10 bps)\n- Total Fee: $0.10, Charity: $0.025, KindSwap: $0.075",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Swap & Points",
+      "item": [
+        {
+          "name": "1. Log Swap Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wallet\": \"{{wallet_address}}\",\n  \"signature\": \"{{tx_signature}}\",\n  \"status\": \"confirmed\",\n  \"inputAmountUSD\": 100.00,\n  \"outputAmountUSD\": 99.50,\n  \"inputMint\": \"So11111111111111111111111111111111111111112\",\n  \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n  \"inputAmount\": \"1000000000\",\n  \"outputAmount\": \"99500000\",\n  \"inputDecimals\": 9,\n  \"outputDecimals\": 6,\n  \"feeTier\": \"Tier 2\",\n  \"discountPercent\": 10,\n  \"effectiveFeeBps\": 9.0,\n  \"feeAmountUSD\": 0.09,\n  \"charityAmountUSD\": 0.0225,\n  \"kindswapFeeUSD\": 0.0675,\n  \"slippageBps\": 50,\n  \"knsBalanceAtSwap\": \"25000\",\n  \"routeData\": {},\n  \"userAgent\": \"KindSwap/1.0\",\n  \"ipAddress\": \"127.0.0.1\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/swap/complete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "swap", "complete"]
+            },
+            "description": "Log a swap transaction (confirmed or failed). The wallet will be created if it doesn't exist. Points awarding is currently disabled.\n\nStatus options: 'confirmed', 'failed', 'pending', 'cancelled'\nFor failed transactions, include 'errorMessage' field.\n\nFEE SPLIT MODEL (charityPortion=0.25, kindswapPortion=0.75):\n- feeAmountUSD = inputAmountUSD × effectiveFeeBps / 10000 (total fee, max 0.1%)\n- charityAmountUSD = feeAmountUSD × charityPortion (25% of total fee)\n- kindswapFeeUSD = feeAmountUSD × kindswapPortion (75% of total fee)\n- charityPortion + kindswapPortion = 1.0\n\nExample for $100 swap at Tier 2 (9 bps):\n- feeAmountUSD = $0.09 (total)\n- charityAmountUSD = $0.0225 (25%)\n- kindswapFeeUSD = $0.0675 (75%)\n\nThe response includes feeVerification which compares frontend-provided fee values against backend-calculated values. Backend-calculated values are stored in the database for data integrity."
+          },
+          "response": [
+            {
+              "name": "Confirmed Transaction",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"signature\": \"5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW\",\n  \"status\": \"confirmed\",\n  \"inputAmountUSD\": 100.00,\n  \"outputAmountUSD\": 99.50,\n  \"inputMint\": \"So11111111111111111111111111111111111111112\",\n  \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n  \"inputAmount\": \"1000000000\",\n  \"outputAmount\": \"99500000\",\n  \"inputDecimals\": 9,\n  \"outputDecimals\": 6,\n  \"feeTier\": \"Tier 2\",\n  \"discountPercent\": 10,\n  \"effectiveFeeBps\": 9.0,\n  \"feeAmountUSD\": 0.09,\n  \"charityAmountUSD\": 0.0225,\n  \"kindswapFeeUSD\": 0.0675,\n  \"slippageBps\": 50,\n  \"knsBalanceAtSwap\": \"25000\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/swap/complete",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "swap", "complete"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"signature\": \"5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW\",\n  \"pointsAwarded\": 0,\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"feeVerification\": {\n    \"isValid\": true,\n    \"calculated\": {\n      \"tierName\": \"Tier 2\",\n      \"discountPercent\": 10,\n      \"effectiveFeeBps\": 9.0,\n      \"feeAmountUSD\": 0.09,\n      \"charityAmountUSD\": 0.0225,\n      \"kindswapFeeUSD\": 0.0675\n    },\n    \"frontend\": {\n      \"tierName\": \"Tier 2\",\n      \"discountPercent\": 10,\n      \"effectiveFeeBps\": 9.0,\n      \"feeAmountUSD\": 0.09,\n      \"charityAmountUSD\": 0.0225,\n      \"kindswapFeeUSD\": 0.0675\n    },\n    \"mismatches\": []\n  }\n}"
+            },
+            {
+              "name": "Failed Transaction",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"signature\": \"FailedTx123456789012345678901234567890123456789012345678901234567890123456789012345678\",\n  \"status\": \"failed\",\n  \"errorMessage\": \"Slippage tolerance exceeded\",\n  \"inputAmountUSD\": 100.00,\n  \"outputAmountUSD\": 0,\n  \"inputMint\": \"So11111111111111111111111111111111111111112\",\n  \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n  \"inputAmount\": \"1000000000\",\n  \"outputAmount\": \"0\",\n  \"inputDecimals\": 9,\n  \"outputDecimals\": 6,\n  \"feeTier\": \"Tier 2\",\n  \"discountPercent\": 10,\n  \"effectiveFeeBps\": 9.0,\n  \"feeAmountUSD\": 0,\n  \"charityAmountUSD\": 0,\n  \"kindswapFeeUSD\": 0,\n  \"slippageBps\": 50,\n  \"knsBalanceAtSwap\": \"25000\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/swap/complete",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "swap", "complete"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"signature\": \"FailedTx123456789012345678901234567890123456789012345678901234567890123456789012345678\",\n  \"pointsAwarded\": 0,\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"feeVerification\": {\n    \"isValid\": true,\n    \"calculated\": {\n      \"tierName\": \"Tier 2\",\n      \"discountPercent\": 10,\n      \"effectiveFeeBps\": 9.0,\n      \"feeAmountUSD\": 0,\n      \"charityAmountUSD\": 0,\n      \"kindswapFeeUSD\": 0\n    },\n    \"frontend\": {\n      \"tierName\": \"Tier 2\",\n      \"discountPercent\": 10,\n      \"effectiveFeeBps\": 9.0,\n      \"feeAmountUSD\": 0,\n      \"charityAmountUSD\": 0,\n      \"kindswapFeeUSD\": 0\n    },\n    \"mismatches\": []\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "2. Get User Points",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/points/{{wallet_address}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "points", "{{wallet_address}}"]
+            },
+            "description": "Get a user's current points breakdown including swap points, community points, KNS points, and statistics."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/points/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "points", "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"totalPoints\": 1500,\n  \"swapPoints\": 1000,\n  \"communityPoints\": 300,\n  \"knsPoints\": 200,\n  \"currentRank\": 42,\n  \"totalSwapVolumeUSD\": \"15000.00\",\n  \"totalSwapsCount\": 25,\n  \"averageSwapSize\": \"600.00\"\n}"
+            },
+            {
+              "name": "New User Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/points/NewWalletAddress1234567890123456789012",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "points", "NewWalletAddress1234567890123456789012"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"wallet\": \"NewWalletAddress1234567890123456789012\",\n  \"totalPoints\": 0,\n  \"swapPoints\": 0,\n  \"communityPoints\": 0,\n  \"knsPoints\": 0,\n  \"totalSwapVolumeUSD\": \"0\",\n  \"totalSwapsCount\": 0,\n  \"averageSwapSize\": \"0\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "3. Get User Swap History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/swaps/{{wallet_address}}?limit=50&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "swaps", "{{wallet_address}}"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Max results (up to 100)"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Pagination offset"
+                }
+              ]
+            },
+            "description": "Get a user's swap transaction history with pagination support."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/swaps/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU?limit=50&offset=0",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "swaps", "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "50"
+                    },
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"swaps\": [\n    {\n      \"signature\": \"5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW\",\n      \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n      \"inputMint\": \"So11111111111111111111111111111111111111112\",\n      \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n      \"inputAmount\": \"1000000000\",\n      \"outputAmount\": \"99500000\",\n      \"inputAmountUSD\": \"100.00\",\n      \"outputAmountUSD\": \"99.50\",\n      \"inputDecimals\": 9,\n      \"outputDecimals\": 6,\n      \"feeTier\": \"Tier 2\",\n      \"discountPercent\": 10,\n      \"effectiveFeeBps\": 9.0,\n      \"feeAmountUSD\": \"0.90\",\n      \"charityAmountUSD\": \"0.45\",\n      \"kindswapFeeUSD\": \"0.45\",\n      \"pointsAwarded\": 100,\n      \"status\": \"confirmed\",\n      \"executedAt\": \"2026-01-21T12:00:00.000Z\",\n      \"createdAt\": \"2026-01-21T12:00:00.000Z\"\n    }\n  ],\n  \"total\": 25,\n  \"limit\": 50,\n  \"offset\": 0\n}"
+            }
+          ]
+        },
+        {
+          "name": "4. Get Single Swap by Signature",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/swaps/transaction/{{tx_signature}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "swaps", "transaction", "{{tx_signature}}"]
+            },
+            "description": "Get details of a specific swap transaction by its Solana signature."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/swaps/transaction/5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "swaps", "transaction", "5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"signature\": \"5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW\",\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"inputMint\": \"So11111111111111111111111111111111111111112\",\n  \"outputMint\": \"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\n  \"inputAmount\": \"1000000000\",\n  \"outputAmount\": \"99500000\",\n  \"inputAmountUSD\": \"100.00\",\n  \"outputAmountUSD\": \"99.50\",\n  \"inputDecimals\": 9,\n  \"outputDecimals\": 6,\n  \"feeTier\": \"Tier 2\",\n  \"discountPercent\": 10,\n  \"effectiveFeeBps\": 9.0,\n  \"feeAmountUSD\": \"0.90\",\n  \"charityAmountUSD\": \"0.45\",\n  \"kindswapFeeUSD\": \"0.45\",\n  \"pointsAwarded\": 100,\n  \"status\": \"confirmed\",\n  \"executedAt\": \"2026-01-21T12:00:00.000Z\",\n  \"createdAt\": \"2026-01-21T12:00:00.000Z\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/swaps/transaction/InvalidSignature123456789012345678901234567890123456789012345678901234567890123456",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "swaps", "transaction", "InvalidSignature123456789012345678901234567890123456789012345678901234567890123456"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": \"Swap transaction not found\",\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "5. Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/leaderboard?timeframe=allTime&limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leaderboard"],
+              "query": [
+                {
+                  "key": "timeframe",
+                  "value": "allTime",
+                  "description": "Filter by: today, week, or allTime"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Max results (up to 1000)"
+                }
+              ]
+            },
+            "description": "Get the leaderboard of top users by total points."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/leaderboard?timeframe=allTime&limit=100",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "leaderboard"],
+                  "query": [
+                    {
+                      "key": "timeframe",
+                      "value": "allTime"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"timeframe\": \"allTime\",\n  \"top100\": [\n    {\n      \"rank\": 1,\n      \"wallet\": \"TopUser111111111111111111111111111111111111\",\n      \"totalPoints\": 50000,\n      \"swapPoints\": 40000,\n      \"communityPoints\": 5000,\n      \"knsPoints\": 5000\n    },\n    {\n      \"rank\": 2,\n      \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n      \"totalPoints\": 35000,\n      \"swapPoints\": 30000,\n      \"communityPoints\": 3000,\n      \"knsPoints\": 2000\n    }\n  ],\n  \"totalUsers\": 100\n}"
+            }
+          ]
+        },
+        {
+          "name": "6. Get Platform Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "stats"]
+            },
+            "description": "Get overall platform statistics including total swaps, volume, and user count."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/stats",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "stats"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"totalSwaps\": 15000,\n  \"confirmedSwaps\": 14500,\n  \"totalVolumeUSD\": \"5000000.00\",\n  \"totalUsersCount\": 2500\n}"
+            }
+          ]
+        },
+        {
+          "name": "7. Award Community Points (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication (TODO: implement auth)"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wallet\": \"{{wallet_address}}\",\n  \"points\": 100,\n  \"reason\": \"Community contribution - helped with documentation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/community/award",
+              "host": ["{{base_url}}"],
+              "path": ["api", "community", "award"]
+            },
+            "description": "Award community points to a user for contributions. Requires admin authentication (TODO)."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"points\": 100,\n  \"reason\": \"Community contribution - helped with documentation\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/community/award",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "community", "award"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"wallet\": \"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU\",\n  \"pointsAwarded\": 100,\n  \"totalCommunityPoints\": 500\n}"
+            }
+          ]
+        },
+        {
+          "name": "8. Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Health check endpoint to verify the API is running."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"timestamp\": \"2026-01-21T12:00:00.000Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fee Configuration - PUBLIC",
+      "item": [
+        {
+          "name": "Get Current Fee Configuration",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/fee-config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "fee-config"]
+            },
+            "description": "Get the current global fee configuration.\n\nFEE SPLIT MODEL:\n- baseFeeBps: Platform fee in basis points (10 = 0.10%, max allowed)\n- charityPortion: Portion of total fee going to charity (0.25 = 25%)\n- kindswapPortion: Portion of total fee going to KindSwap (0.75 = 75%)\n- charityPortion + kindswapPortion = 1.0\n- platformWallet: Solana wallet address where platform fees are sent\n- charityWallet: Solana wallet address where charity fees are sent\n\nTotal fee to user = baseFeeBps (max 0.1%), split between charity and KindSwap"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/fee-config",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "fee-config"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"baseFeeBps\": 10.0,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75,\n  \"platformWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"charityWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Fee Tiers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/fee-tiers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "fee-tiers"]
+            },
+            "description": "Get all 5 active fee tiers ordered by tier order"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/fee-tiers",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "fee-tiers"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"No Tier\",\n    \"knsMin\": \"0\",\n    \"discountPercent\": 0,\n    \"effectiveFeeBps\": 10.0,\n    \"tierOrder\": 0,\n    \"isActive\": true,\n    \"version\": 1,\n    \"notes\": \"Base tier for users with no KNS tokens\",\n    \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n  },\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440002\",\n    \"name\": \"Tier 1\",\n    \"knsMin\": \"5000\",\n    \"discountPercent\": 5,\n    \"effectiveFeeBps\": 9.5,\n    \"tierOrder\": 1,\n    \"isActive\": true,\n    \"version\": 1,\n    \"notes\": \"5% discount for holding 5,000+ KNS\",\n    \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n  },\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440003\",\n    \"name\": \"Tier 2\",\n    \"knsMin\": \"25000\",\n    \"discountPercent\": 10,\n    \"effectiveFeeBps\": 9.0,\n    \"tierOrder\": 2,\n    \"isActive\": true,\n    \"version\": 1,\n    \"notes\": \"10% discount for holding 25,000+ KNS\",\n    \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n  },\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"100000\",\n    \"discountPercent\": 15,\n    \"effectiveFeeBps\": 8.5,\n    \"tierOrder\": 3,\n    \"isActive\": true,\n    \"version\": 1,\n    \"notes\": \"15% discount for holding 100,000+ KNS\",\n    \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n  },\n  {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n    \"name\": \"Tier 4\",\n    \"knsMin\": \"500000\",\n    \"discountPercent\": 20,\n    \"effectiveFeeBps\": 8.0,\n    \"tierOrder\": 4,\n    \"isActive\": true,\n    \"version\": 1,\n    \"notes\": \"20% discount for holding 500,000+ KNS\",\n    \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n    \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Specific Tier by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/fee-tiers/{{tier_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "fee-tiers", "{{tier_id}}"]
+            },
+            "description": "Get a specific fee tier by ID. First run 'Get All Fee Tiers' and copy an ID to the {{tier_id}} variable"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/fee-tiers/550e8400-e29b-41d4-a716-446655440004",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "fee-tiers", "550e8400-e29b-41d4-a716-446655440004"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440004\",\n  \"name\": \"Tier 3\",\n  \"knsMin\": \"100000\",\n  \"discountPercent\": 15,\n  \"effectiveFeeBps\": 8.5,\n  \"tierOrder\": 3,\n  \"isActive\": true,\n  \"version\": 1,\n  \"notes\": \"15% discount for holding 100,000+ KNS\",\n  \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n  \"updatedAt\": \"2026-01-13T10:00:00.000Z\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/fee-tiers/invalid-id",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "fee-tiers", "invalid-id"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 404,\n  \"message\": \"Fee tier not found\",\n  \"error\": \"Not Found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Fee - No Tier (0 KNS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "calculate-fee"],
+              "query": [
+                {
+                  "key": "knsBalance",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Calculate applicable fee tier for user with 0 KNS (No Tier)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=0",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "calculate-fee"],
+                  "query": [
+                    {
+                      "key": "knsBalance",
+                      "value": "0"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"knsBalance\": \"0\",\n  \"applicableTier\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440001\",\n    \"name\": \"No Tier\",\n    \"knsMin\": \"0\",\n    \"discountPercent\": 0,\n    \"effectiveFeeBps\": 10.0,\n    \"tierOrder\": 0\n  },\n  \"effectiveFeeBps\": 10.0,\n  \"discountPercent\": 0,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Fee - Tier 1 (5k KNS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=5000",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "calculate-fee"],
+              "query": [
+                {
+                  "key": "knsBalance",
+                  "value": "5000"
+                }
+              ]
+            },
+            "description": "Calculate applicable fee tier for user with 5,000 KNS (Tier 1)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=5000",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "calculate-fee"],
+                  "query": [
+                    {
+                      "key": "knsBalance",
+                      "value": "5000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"knsBalance\": \"5000\",\n  \"applicableTier\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440002\",\n    \"name\": \"Tier 1\",\n    \"knsMin\": \"5000\",\n    \"discountPercent\": 5,\n    \"effectiveFeeBps\": 9.5,\n    \"tierOrder\": 1\n  },\n  \"effectiveFeeBps\": 9.5,\n  \"discountPercent\": 5,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Fee - Tier 2 (25k KNS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=25000",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "calculate-fee"],
+              "query": [
+                {
+                  "key": "knsBalance",
+                  "value": "25000"
+                }
+              ]
+            },
+            "description": "Calculate applicable fee tier for user with 25,000 KNS (Tier 2)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=25000",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "calculate-fee"],
+                  "query": [
+                    {
+                      "key": "knsBalance",
+                      "value": "25000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"knsBalance\": \"25000\",\n  \"applicableTier\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440003\",\n    \"name\": \"Tier 2\",\n    \"knsMin\": \"25000\",\n    \"discountPercent\": 10,\n    \"effectiveFeeBps\": 9.0,\n    \"tierOrder\": 2\n  },\n  \"effectiveFeeBps\": 9.0,\n  \"discountPercent\": 10,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Fee - Tier 3 (100k KNS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=100000",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "calculate-fee"],
+              "query": [
+                {
+                  "key": "knsBalance",
+                  "value": "100000"
+                }
+              ]
+            },
+            "description": "Calculate applicable fee tier for user with 100,000 KNS (Tier 3)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=100000",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "calculate-fee"],
+                  "query": [
+                    {
+                      "key": "knsBalance",
+                      "value": "100000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"knsBalance\": \"100000\",\n  \"applicableTier\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"100000\",\n    \"discountPercent\": 15,\n    \"effectiveFeeBps\": 8.5,\n    \"tierOrder\": 3\n  },\n  \"effectiveFeeBps\": 8.5,\n  \"discountPercent\": 15,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75\n}"
+            }
+          ]
+        },
+        {
+          "name": "Calculate Fee - Tier 4 (500k KNS)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=500000",
+              "host": ["{{base_url}}"],
+              "path": ["api", "config", "calculate-fee"],
+              "query": [
+                {
+                  "key": "knsBalance",
+                  "value": "500000"
+                }
+              ]
+            },
+            "description": "Calculate applicable fee tier for user with 500,000 KNS (Tier 4 - max discount)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/config/calculate-fee?knsBalance=500000",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "config", "calculate-fee"],
+                  "query": [
+                    {
+                      "key": "knsBalance",
+                      "value": "500000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"knsBalance\": \"500000\",\n  \"applicableTier\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440005\",\n    \"name\": \"Tier 4\",\n    \"knsMin\": \"500000\",\n    \"discountPercent\": 20,\n    \"effectiveFeeBps\": 8.0,\n    \"tierOrder\": 4\n  },\n  \"effectiveFeeBps\": 8.0,\n  \"discountPercent\": 20,\n  \"charityPortion\": 0.25,\n  \"kindswapPortion\": 0.75\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ADMIN - Auth Required (TODO)",
+      "item": [
+        {
+          "name": "Update Fee Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"baseFeeBps\": 10.0,\n  \"charityPortion\": 0.30,\n  \"kindswapPortion\": 0.70,\n  \"platformWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"charityWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"changeReason\": \"Increase charity portion from 25% to 30% of total fee\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/config/fee-config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "config", "fee-config"]
+            },
+            "description": "Update global fee configuration. Requires admin authentication via X-Admin-Wallet header.\n\nFEE SPLIT MODEL:\n- charityPortion: Portion of total fee for charity (0.25 = 25%)\n- kindswapPortion: Portion of total fee for KindSwap (0.75 = 75%)\n- charityPortion + kindswapPortion MUST equal 1.0\n- platformWallet: Solana wallet address (32-44 chars, base58) where platform fees are sent\n- charityWallet: Solana wallet address (32-44 chars, base58) where charity fees are sent\n\nExample: baseFeeBps=10, charityPortion=0.25, kindswapPortion=0.75\n- Total fee: 10 bps (0.10%) → charged to user (max allowed)\n- Charity: 2.5 bps (0.025%) → 25% of total fee\n- KindSwap: 7.5 bps (0.075%) → 75% of total fee\n\nAll optional fields. Only provided fields will be updated."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"baseFeeBps\": 10.0,\n  \"charityPortion\": 0.30,\n  \"kindswapPortion\": 0.70,\n  \"platformWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"charityWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"changeReason\": \"Increase charity portion from 25% to 30% of total fee\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/config/fee-config",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "config", "fee-config"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Fee configuration updated successfully\"\n}"
+            },
+            {
+              "name": "Version Conflict",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"baseFeeBps\": 10.0,\n  \"charityPortion\": 0.30,\n  \"kindswapPortion\": 0.70,\n  \"platformWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"charityWallet\": \"ksw2N41N4a2UXGCxj3hhZczdaC5P5wPBNCC35kutD28\",\n  \"changeReason\": \"Increase charity portion from 25% to 30% of total fee\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/config/fee-config",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "config", "fee-config"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 409,\n  \"message\": \"Configuration has been modified by another user. Please refresh and try again.\",\n  \"error\": \"Conflict\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"baseFeeBps\": -5,\n  \"charityPortion\": 1.5,\n  \"kindswapPortion\": -0.5,\n  \"version\": 1,\n  \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n  \"changeReason\": \"Invalid values\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/admin/config/fee-config",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "admin", "config", "fee-config"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": [\n    \"baseFeeBps must be a positive number\",\n    \"charityPortion must be between 0 and 1\",\n    \"kindswapPortion must be between 0 and 1\"\n  ],\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Fee Tier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"knsMin\": \"75000\",\n  \"discountPercent\": 12,\n  \"effectiveFeeBps\": 8.8,\n  \"version\": 1,\n  \"changedBy\": \"{{admin_wallet}}\",\n  \"changeReason\": \"Lowering Tier 3 threshold to make it more accessible\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/fee-tiers/{{tier_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "fee-tiers", "{{tier_id}}"]
+            },
+            "description": "Update a specific fee tier. Use tier_id from 'Get All Fee Tiers' response. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"knsMin\": \"75000\",\n  \"discountPercent\": 12,\n  \"effectiveFeeBps\": 8.8,\n  \"version\": 1,\n  \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n  \"changeReason\": \"Lowering Tier 3 threshold to make it more accessible\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/fee-tiers/550e8400-e29b-41d4-a716-446655440004",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "fee-tiers", "550e8400-e29b-41d4-a716-446655440004"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440004\",\n  \"name\": \"Tier 3\",\n  \"knsMin\": \"75000\",\n  \"discountPercent\": 12,\n  \"effectiveFeeBps\": 8.8,\n  \"tierOrder\": 3,\n  \"isActive\": true,\n  \"version\": 2,\n  \"notes\": \"15% discount for holding 100,000+ KNS\",\n  \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n  \"updatedAt\": \"2026-01-15T14:35:00.000Z\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"knsMin\": \"75000\",\n  \"discountPercent\": 150,\n  \"effectiveFeeBps\": -5,\n  \"version\": 1,\n  \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n  \"changeReason\": \"Invalid values\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/fee-tiers/550e8400-e29b-41d4-a716-446655440004",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "fee-tiers", "550e8400-e29b-41d4-a716-446655440004"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"statusCode\": 400,\n  \"message\": [\n    \"discountPercent must be between 0 and 100\",\n    \"effectiveFeeBps must be a positive number\"\n  ],\n  \"error\": \"Bad Request\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Fee Configuration Audit Log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/audit-log/fee-config?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "audit-log", "fee-config"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get audit trail for fee configuration changes. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/audit-log/fee-config?limit=10",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "audit-log", "fee-config"],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440001\",\n    \"configId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"baseFeeBps\": 12.0,\n    \"charityPortion\": 0.6,\n    \"kindswapPortion\": 0.4,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Increase charity portion from 25% to 30% of platform fee\",\n    \"changedAt\": \"2026-01-15T14:30:00.000Z\"\n  },\n  {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n    \"configId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"baseFeeBps\": 10.0,\n    \"charityPortion\": 0.5,\n    \"kindswapPortion\": 0.5,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Initial configuration setup\",\n    \"changedAt\": \"2026-01-13T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Fee Tier Audit Log (All)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/audit-log/fee-tiers?limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "audit-log", "fee-tiers"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get audit trail for all fee tier changes. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/audit-log/fee-tiers?limit=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "audit-log", "fee-tiers"],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"770e8400-e29b-41d4-a716-446655440002\",\n    \"tierId\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"75000\",\n    \"discountPercent\": 12,\n    \"effectiveFeeBps\": 8.8,\n    \"tierOrder\": 3,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Lowering Tier 3 threshold to make it more accessible\",\n    \"changedAt\": \"2026-01-15T14:35:00.000Z\"\n  },\n  {\n    \"id\": \"770e8400-e29b-41d4-a716-446655440001\",\n    \"tierId\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"100000\",\n    \"discountPercent\": 15,\n    \"effectiveFeeBps\": 8.5,\n    \"tierOrder\": 3,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Initial tier setup\",\n    \"changedAt\": \"2026-01-13T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Get Fee Tier Audit Log (Specific Tier)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/audit-log/fee-tiers?tierId={{tier_id}}&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "audit-log", "fee-tiers"],
+              "query": [
+                {
+                  "key": "tierId",
+                  "value": "{{tier_id}}"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get audit trail for a specific fee tier. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/audit-log/fee-tiers?tierId=550e8400-e29b-41d4-a716-446655440004&limit=10",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "audit-log", "fee-tiers"],
+                  "query": [
+                    {
+                      "key": "tierId",
+                      "value": "550e8400-e29b-41d4-a716-446655440004"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"770e8400-e29b-41d4-a716-446655440002\",\n    \"tierId\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"75000\",\n    \"discountPercent\": 12,\n    \"effectiveFeeBps\": 8.8,\n    \"tierOrder\": 3,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Lowering Tier 3 threshold to make it more accessible\",\n    \"changedAt\": \"2026-01-15T14:35:00.000Z\"\n  },\n  {\n    \"id\": \"770e8400-e29b-41d4-a716-446655440001\",\n    \"tierId\": \"550e8400-e29b-41d4-a716-446655440004\",\n    \"name\": \"Tier 3\",\n    \"knsMin\": \"100000\",\n    \"discountPercent\": 15,\n    \"effectiveFeeBps\": 8.5,\n    \"tierOrder\": 3,\n    \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n    \"changeReason\": \"Initial tier setup\",\n    \"changedAt\": \"2026-01-13T10:00:00.000Z\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Deactivate Fee Tier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"changedBy\": \"{{admin_wallet}}\",\n  \"changeReason\": \"Temporarily removing Tier 1 for promotional period\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/fee-tiers/{{tier_id}}/deactivate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "fee-tiers", "{{tier_id}}", "deactivate"]
+            },
+            "description": "Soft delete / deactivate a fee tier. It will no longer appear in the tier list. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n  \"changeReason\": \"Temporarily removing Tier 1 for promotional period\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/fee-tiers/550e8400-e29b-41d4-a716-446655440002/deactivate",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "fee-tiers", "550e8400-e29b-41d4-a716-446655440002", "deactivate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"name\": \"Tier 1\",\n  \"knsMin\": \"5000\",\n  \"discountPercent\": 5,\n  \"effectiveFeeBps\": 9.5,\n  \"tierOrder\": 1,\n  \"isActive\": false,\n  \"version\": 2,\n  \"notes\": \"5% discount for holding 5,000+ KNS\",\n  \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n  \"updatedAt\": \"2026-01-15T14:40:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reactivate Fee Tier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Wallet",
+                "value": "{{admin_wallet}}",
+                "description": "Admin wallet address for authentication"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"changedBy\": \"{{admin_wallet}}\",\n  \"changeReason\": \"Re-enabling Tier 1 after promotional period\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/config/fee-tiers/{{tier_id}}/activate",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "config", "fee-tiers", "{{tier_id}}", "activate"]
+            },
+            "description": "Reactivate a deactivated fee tier. Requires admin authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "X-Admin-Wallet",
+                    "value": "0x1234567890123456789012345678901234567890"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"changedBy\": \"0x1234567890123456789012345678901234567890\",\n  \"changeReason\": \"Re-enabling Tier 1 after promotional period\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/config/fee-tiers/550e8400-e29b-41d4-a716-446655440002/activate",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "admin", "config", "fee-tiers", "550e8400-e29b-41d4-a716-446655440002", "activate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"name\": \"Tier 1\",\n  \"knsMin\": \"5000\",\n  \"discountPercent\": 5,\n  \"effectiveFeeBps\": 9.5,\n  \"tierOrder\": 1,\n  \"isActive\": true,\n  \"version\": 3,\n  \"notes\": \"5% discount for holding 5,000+ KNS\",\n  \"createdAt\": \"2026-01-13T10:00:00.000Z\",\n  \"updatedAt\": \"2026-01-15T14:45:00.000Z\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL of the API server"
+    },
+    {
+      "key": "wallet_address",
+      "value": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+      "type": "string",
+      "description": "Solana wallet address (44 characters)"
+    },
+    {
+      "key": "tx_signature",
+      "value": "5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW",
+      "type": "string",
+      "description": "Solana transaction signature (88 characters)"
+    },
+    {
+      "key": "tier_id",
+      "value": "",
+      "type": "string",
+      "description": "Copy a tier ID from 'Get All Fee Tiers' response and paste it here"
+    },
+    {
+      "key": "admin_wallet",
+      "value": "AdminWallet12345678901234567890123456789012",
+      "type": "string",
+      "description": "Admin wallet address for authentication - replace with your actual admin wallet"
+    }
+  ]
+}

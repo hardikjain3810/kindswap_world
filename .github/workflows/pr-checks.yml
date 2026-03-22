@@ -25,9 +25,9 @@ jobs:
       matrix:
         service:
           - name: backend
-            path: 'backend/kindsoul-b'
+            path: 'backend'
           - name: frontend
-            path: 'frontend/KindSoul-F'
+            path: 'frontend'
           - name: admin-backend
             path: 'admin backend/Admin-Backend'
           - name: admin-frontend
