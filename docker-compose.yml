@@ -1,0 +1,145 @@
+version: '3.8'
+
+# ============================================================
+# KindSwap Local Development Environment
+# Mirrors the EKS environment as closely as possible
+# All services use the same Docker images as production
+# DB credentials are passed as env vars (not from Secrets Manager)
+# ============================================================
+
+services:
+
+  # --------------------------------------------------------
+  # PostgreSQL — local equivalent of kindswap-nonprod RDS
+  # Uses same PostgreSQL version as production (16.x)
+  # --------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: kindswap-postgres
+    environment:
+      POSTGRES_USER: kindswap_admin
+      POSTGRES_PASSWORD: localdevpassword123
+      POSTGRES_DB: kindswap_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kindswap_admin -d kindswap_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------
+  # NestJS Backend
+  # Uses node:20-slim — same as production
+  # Environment variables replace Secrets Manager for local
+  # --------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: kindswap-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # DB credentials — replace Secrets Manager for local dev
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: kindswap_dev
+      DB_USER: kindswap_admin
+      DB_PASSWORD: localdevpassword123
+      PG_POOL_MAX: 10
+      # API keys — replace with actual dev keys or mock values
+      HELIUS_RPC_KEY: ${HELIUS_RPC_KEY:-mock-key}
+      QUICKNODE_KEY: ${QUICKNODE_KEY:-mock-key}
+      JUPITER_API_KEY: ${JUPITER_API_KEY:-mock-key}
+      COINGECKO_KEY_1: ${COINGECKO_KEY_1:-mock-key}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Hot reload — mount source for development
+      - ./backend/src:/app/src:ro
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))\""]
+      interval: 15s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # React Frontend (Vite + Nginx)
+  # Uses nginx:alpine — same as production
+  # Proxies /api requests to backend
+  # --------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: kindswap-frontend
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # Admin Backend
+  # --------------------------------------------------------
+  admin-backend:
+    build:
+      context: "./admin backend/Admin-Backend"
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: kindswap-admin-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: kindswap_dev
+      DB_USER: kindswap_admin
+      DB_PASSWORD: localdevpassword123
+      PG_POOL_MAX: 5
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # Admin Frontend
+  # --------------------------------------------------------
+  admin-frontend:
+    build:
+      context: "./admin panel/Admin-Panel"
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: kindswap-admin-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - admin-backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: kindswap_postgres_data

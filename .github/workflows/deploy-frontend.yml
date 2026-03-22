@@ -1,0 +1,251 @@
+name: Deploy — KindSwap Frontend
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend.yml'
+
+permissions:
+  id-token: write   # Required for OIDC authentication with AWS
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: kindswap-frontend
+  HELM_RELEASE: kindswap-frontend
+  EKS_CLUSTER: kindswap-cluster
+
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):
+# AWS_ACCOUNT_ID          — 12-digit AWS account ID
+# COSIGN_PRIVATE_KEY      — Private key from kindswap/cosign/private-key in Secrets Manager
+# COSIGN_PASSWORD         — Cosign key password (if key was generated with password)
+
+# GitHub Environment protection rules:
+# production  — Requires approval from senior team members
+# staging     — Requires approval from QA team
+# dev         — No approval required (auto-deploy on push)
+
+jobs:
+  deploy:
+    name: Build & Deploy Frontend
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
+
+    steps:
+      # ---------------------------------------------------------------
+      # STEP 1 — Checkout
+      # ---------------------------------------------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------------------------------------------------------------
+      # STEP 2 — Setup Node (for npm audit)
+      # ---------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      # ---------------------------------------------------------------
+      # STEP 3 — npm audit gate (FAIL on HIGH or CRITICAL)
+      # ---------------------------------------------------------------
+      - name: npm audit — security gate
+        working-directory: frontend
+        run: |
+          npm ci --prefer-offline
+          npm audit --audit-level=high
+          echo "✅ npm audit passed — no HIGH or CRITICAL vulnerabilities"
+
+      # ---------------------------------------------------------------
+      # STEP 4 — Configure AWS credentials via OIDC
+      # ---------------------------------------------------------------
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/kindswap-github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ---------------------------------------------------------------
+      # STEP 5 — Login to ECR
+      # ---------------------------------------------------------------
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ---------------------------------------------------------------
+      # STEP 6 — Set image tag (commit SHA — never :latest)
+      # ---------------------------------------------------------------
+      - name: Set image tag
+        id: image-tag
+        run: |
+          TAG="${{ github.sha }}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${TAG}" >> $GITHUB_OUTPUT
+
+      # ---------------------------------------------------------------
+      # STEP 7 — Build Vite → nginx (React static + reverse proxy)
+      # ---------------------------------------------------------------
+      - name: Build Docker image (Vite + nginx)
+        run: |
+          docker build \
+            --build-arg NODE_ENV=production \
+            --tag ${{ steps.image-tag.outputs.image }} \
+            --file frontend/Dockerfile \
+            frontend/
+          echo "✅ Docker build complete — Vite + nginx:alpine"
+
+      # ---------------------------------------------------------------
+      # STEP 8 — Push to ECR
+      # ---------------------------------------------------------------
+      - name: Push to ECR
+        run: |
+          docker push ${{ steps.image-tag.outputs.image }}
+          echo "✅ Pushed to ECR: ${{ steps.image-tag.outputs.image }}"
+
+      # ---------------------------------------------------------------
+      # STEP 9 — CVE gate (FAIL on any CRITICAL finding)
+      # ---------------------------------------------------------------
+      - name: ECR CVE scan gate
+        run: |
+          echo "⏳ Waiting for ECR scan to complete..."
+          sleep 30
+
+          FINDINGS=$(aws ecr describe-image-scan-findings \
+            --repository-name ${{ env.ECR_REPOSITORY }} \
+            --image-id imageTag=${{ steps.image-tag.outputs.tag }} \
+            --region ${{ env.AWS_REGION }} \
+            --query 'imageScanFindings.findingSeverityCounts' \
+            --output json 2>/dev/null || echo '{}')
+
+          echo "Scan findings: $FINDINGS"
+
+          CRITICAL=$(echo $FINDINGS | jq -r '.CRITICAL // 0')
+          HIGH=$(echo $FINDINGS | jq -r '.HIGH // 0')
+
+          echo "Critical CVEs: $CRITICAL"
+          echo "High CVEs: $HIGH"
+
+          if [ "$CRITICAL" -gt "0" ]; then
+            echo "🚨 PIPELINE BLOCKED — $CRITICAL Critical CVE(s) found. Fix before deploying."
+            exit 1
+          fi
+
+          if [ "$HIGH" -gt "0" ]; then
+            echo "⚠️ WARNING — $HIGH High CVE(s) found. Review required but deployment continues."
+          fi
+
+          echo "✅ CVE gate passed — no Critical vulnerabilities"
+
+      # ---------------------------------------------------------------
+      # STEP 10 — Cosign image signing
+      # ---------------------------------------------------------------
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image with Cosign
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          cosign sign --key /tmp/cosign.key \
+            --yes \
+            ${{ steps.image-tag.outputs.image }}
+          rm -f /tmp/cosign.key
+          echo "✅ Image signed with Cosign"
+
+      # ---------------------------------------------------------------
+      # STEP 11 — SBOM generation (syft → S3)
+      # ---------------------------------------------------------------
+      - name: Install syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Generate SBOM and upload to S3
+        run: |
+          syft ${{ steps.image-tag.outputs.image }} \
+            -o spdx-json \
+            --file /tmp/sbom.json
+
+          aws s3 cp /tmp/sbom.json \
+            s3://kindswap-sbom-${{ secrets.AWS_ACCOUNT_ID }}/kindswap-frontend/${{ steps.image-tag.outputs.tag }}.spdx.json \
+            --sse aws:kms \
+            --sse-kms-key-id alias/kindswap-master
+
+          echo "✅ SBOM uploaded to S3"
+
+      # ---------------------------------------------------------------
+      # STEP 12 — Skip pre-deploy snapshot (frontend is stateless)
+      # ---------------------------------------------------------------
+      # Pre-deploy snapshots are only for backend (writes to DB)
+      # Frontend is read-only, stateless deployment
+
+      # ---------------------------------------------------------------
+      # STEP 13 — Update kubeconfig
+      # ---------------------------------------------------------------
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ env.EKS_CLUSTER }} \
+            --region ${{ env.AWS_REGION }}
+
+      # ---------------------------------------------------------------
+      # STEP 14 — Set deployment namespace
+      # ---------------------------------------------------------------
+      - name: Set namespace
+        id: namespace
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "namespace=production" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" == "staging" ]; then
+            echo "namespace=staging" >> $GITHUB_OUTPUT
+          else
+            echo "namespace=dev" >> $GITHUB_OUTPUT
+          fi
+
+      # ---------------------------------------------------------------
+      # STEP 15 — Helm upgrade (atomic — auto-rollback on failure)
+      # ---------------------------------------------------------------
+      - name: Helm upgrade
+        run: |
+          helm upgrade --install ${{ env.HELM_RELEASE }} \
+            infra/infra/infra-k8s/05-apps/helm/kindswap-frontend \
+            --namespace ${{ steps.namespace.outputs.namespace }} \
+            --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
+            --set image.tag=${{ steps.image-tag.outputs.tag }} \
+            --set environment=${{ steps.namespace.outputs.namespace }} \
+            --atomic \
+            --wait \
+            --timeout 5m \
+            --history-max 5
+          echo "✅ Helm upgrade complete"
+
+      # ---------------------------------------------------------------
+      # STEP 16 — Verify rollout
+      # ---------------------------------------------------------------
+      - name: Verify rollout
+        run: |
+          kubectl rollout status deployment/${{ env.HELM_RELEASE }} \
+            --namespace ${{ steps.namespace.outputs.namespace }} \
+            --timeout=5m
+          echo "✅ Rollout verified — all pods Running"
+
+      # ---------------------------------------------------------------
+      # STEP 17 — Rollback on failure
+      # ---------------------------------------------------------------
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "🔄 Deployment failed — rolling back..."
+          helm rollback ${{ env.HELM_RELEASE }} \
+            --namespace ${{ steps.namespace.outputs.namespace }} \
+            --wait \
+            --timeout 3m || true
+          echo "Rollback attempted. Check pod status manually."

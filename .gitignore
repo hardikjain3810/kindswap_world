@@ -1,0 +1,214 @@
+# ============================================================================
+# KINDSWAP GITIGNORE — Production-Safe Configuration
+# ============================================================================
+# Security-Critical: Never commit secrets, credentials, private keys, or state files
+
+# ============================================================================
+# 1. ENVIRONMENT & SECRETS
+# ============================================================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production.local
+.env.production
+*.env
+
+# AWS Credentials
+.aws/
+~/.aws/
+AWS_PROFILE=*
+AWS_ACCESS_KEY_ID=*
+AWS_SECRET_ACCESS_KEY=*
+
+# Private Keys & Certificates
+*.key
+*.pem
+*.pfx
+*.p12
+*.der
+*.crt
+*.cert
+*.cer
+*.p8
+id_rsa
+id_dsa
+*.jks
+
+# SSH Keys
+.ssh/
+**/ssh/
+known_hosts
+
+# Terraform Secrets & State
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+crash.log
+crash.*.log
+
+# ============================================================================
+# 2. DEVELOPMENT & BUILD ARTIFACTS
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+out/
+target/
+.cache/
+.next/
+.vuepress/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Go
+/bin/
+/obj/
+
+# ============================================================================
+# 3. IDE & EDITOR CONFIGURATION
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# ============================================================================
+# 4. CI/CD & BUILD LOGS
+# ============================================================================
+.github/workflows/*.log
+.gitlab-ci.log
+.circleci/
+terraform.log
+docker-build.log
+build.log
+test-results/
+
+# ============================================================================
+# 5. DEPENDENCY LOCK FILES (Optional — Uncomment if using lock files)
+# ============================================================================
+# package-lock.json  # Uncomment if not needed in repo
+# yarn.lock          # Uncomment if not needed in repo
+# go.sum             # Uncomment if not needed in repo
+
+# ============================================================================
+# 6. TEMPORARY & AUTO-GENERATED FILES
+# ============================================================================
+*.bat
+temp_*.bat
+*.tmp
+*.swp
+*.bak
+*~
+.DS_Store
+Thumbs.db
+*.log
+*.out
+
+# ============================================================================
+# 7. DATABASE & CONTAINER ARTIFACTS
+# ============================================================================
+*.sql
+!schema.sql
+!migrations/*.sql
+docker-compose.override.yml
+.pgpass
+pgpass
+database.yml
+.mysql-history
+
+# ============================================================================
+# 8. SECRETS MANAGEMENT
+# ============================================================================
+secrets/
+.secrets/
+vault-token
+.vault-token
+cosign.key
+cosign.pub
+*.gpg
+!.gitkeep
+
+# ============================================================================
+# 9. LOCAL DEVELOPMENT FILES
+# ============================================================================
+.vscode/settings.json
+.idea/workspace.xml
+*.iml
+.DS_Store
+local-config.json
+dev-config.json
+
+# ============================================================================
+# 10. LAMBDA & SERVERLESS ARTIFACTS
+# ============================================================================
+.serverless/
+.serverless_plugins/
+serverless-stack.json
+*.zip
+
+# ============================================================================
+# 11. KUBERNETES & HELM
+# ============================================================================
+kubeconfig
+kubeconfig.yaml
+helm-values-generated.yaml
+secrets/
+.kube/
+.helm/
+
+# ============================================================================
+# SAFE TO COMMIT
+# ============================================================================
+# .env.example — Example with dummy values (NO REAL SECRETS)
+# *.example — Example configuration files
+# *.sample — Sample files
+# docs/ — Documentation
+# .github/workflows/*.yml — CI/CD pipelines (reviewed for no secrets)

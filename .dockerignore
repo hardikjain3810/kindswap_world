@@ -1,0 +1,48 @@
+# Node modules — never copy into Docker context
+node_modules
+**/node_modules
+
+# Git
+.git
+.gitignore
+
+# Build outputs
+dist
+build
+.next
+
+# Environment files — never bake into images
+.env
+.env.*
+*.env
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+**/__tests__
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Terraform
+infra/
+*.tfstate
+*.tfvars
+
+# CI/CD
+.github/
+
+# Documentation
+*.md
+docs/
+
+# Docker files themselves (optional)
+Dockerfile
+docker-compose.yml
+.dockerignore

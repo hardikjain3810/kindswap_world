@@ -1,0 +1,45 @@
+# ============================================================================
+# GIT ATTRIBUTES — Line Endings & Binary Files
+# ============================================================================
+
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Source code
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.py text eol=lf
+*.go text eol=lf
+*.rs text eol=lf
+*.sh text eol=lf
+*.sql text eol=lf
+*.tf text eol=lf
+*.md text eol=lf
+
+# Terraform
+*.tfstate diff=terraform
+*.tfstate.backup diff=terraform
+
+# Prevent accidental commits of sensitive files
+*.key binary
+*.pem binary
+*.pfx binary
+*.p12 binary
+*.cert binary
+.env binary
+.env.* binary
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.tar binary
+*.gz binary
