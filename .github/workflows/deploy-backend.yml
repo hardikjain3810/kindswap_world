@@ -157,7 +157,11 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          printf '%s' "$COSIGN_PRIVATE_KEY" | tr -d '\r' > /tmp/cosign.key
+          head -n 1 /tmp/cosign.key
+          tail -n 1 /tmp/cosign.key
+          grep -Eq '^-----BEGIN ENCRYPTED (COSIGN|SIGSTORE) PRIVATE KEY-----$' /tmp/cosign.key
+          grep -Eq '^-----END ENCRYPTED (COSIGN|SIGSTORE) PRIVATE KEY-----$' /tmp/cosign.key
           cosign sign --key /tmp/cosign.key \
             --yes \
             ${{ steps.image-tag.outputs.image }}
@@ -226,7 +230,7 @@ jobs:
       - name: Helm upgrade
         run: |
           helm upgrade --install ${{ env.HELM_RELEASE }} \
-            infra/infra/infra-k8s/05-apps/helm/kindswap-backend \
+            ./infra/infra/infra-k8s/05-apps/helm/kindswap-backend \
             --namespace ${{ steps.namespace.outputs.namespace }} \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
             --set image.tag=${{ steps.image-tag.outputs.tag }} \
