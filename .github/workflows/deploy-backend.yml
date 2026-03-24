@@ -229,12 +229,17 @@ jobs:
       # ---------------------------------------------------------------
       - name: Helm upgrade
         run: |
-          CHART_PATH=$(find . -type f -name Chart.yaml | grep '/kindswap-backend/Chart.yaml$' | head -n 1 | xargs dirname)
+          # Smart-find backend chart and exclude admin charts
+          CHART_PATH=$(find . -name "Chart.yaml" | grep -i "backend" | grep -vi "admin" | head -n 1 | xargs dirname)
+
+          echo "Found Helm chart at: $CHART_PATH"
+
           if [ -z "$CHART_PATH" ] || [ ! -f "$CHART_PATH/Chart.yaml" ]; then
-            echo "❌ Helm chart not found for kindswap-backend"
+            echo "❌ Could not find the backend Helm chart!"
+            echo "Here is what I found instead:"
+            find . -name "Chart.yaml"
             exit 1
           fi
-          echo "Using Helm chart path: $CHART_PATH"
 
           helm upgrade --install ${{ env.HELM_RELEASE }} \
             "$CHART_PATH" \
