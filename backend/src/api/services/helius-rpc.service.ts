@@ -34,12 +34,15 @@ export class HeliusRpcService {
   constructor(private readonly configService: ConfigService) {
     const heliusApiKey = this.configService.get<string>('HELIUS_API_KEY');
 
-    if (!heliusApiKey) {
-      throw new Error('HELIUS_API_KEY environment variable is required');
+    // In development, allow fallback to public RPC if key is not set or is placeholder
+    if (!heliusApiKey || heliusApiKey === 'your_helius_free_api_key_here') {
+      this.logger.warn('HELIUS_API_KEY not configured - using fallback public RPC (limited rate limits)');
+      // Use public endpoint as fallback for development
+      this.rpcUrl = 'https://api.mainnet-beta.solana.com/';
+    } else {
+      this.rpcUrl = `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`;
+      this.logger.log('Helius RPC Service initialized with API key');
     }
-
-    this.rpcUrl = `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`;
-    this.logger.log('Helius RPC Service initialized');
   }
 
   /**

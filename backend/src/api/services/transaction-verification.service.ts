@@ -105,14 +105,14 @@ export class TransactionVerificationService {
     private readonly configService: ConfigService,
     private readonly priceOracleService: PriceOracleService,
   ) {
-    const solscanApiKey = this.configService.get<string>('SOLSCAN_API_KEY');
+    const solscanApiKey = this.configService.get<string>('SOLSCAN_API_KEY', '');
 
-    if (!solscanApiKey) {
-      throw new Error('SOLSCAN_API_KEY environment variable is required');
+    if (!solscanApiKey || solscanApiKey === 'your_solscan_api_key_here') {
+      this.logger.warn('SOLSCAN_API_KEY not configured - using public API (may be rate limited or blocked)');
     }
 
     this.solscanApiKey = solscanApiKey;
-    this.logger.log('Transaction Verification Service initialized with Solscan API');
+    this.logger.log('Transaction Verification Service initialized');
   }
 
   /**

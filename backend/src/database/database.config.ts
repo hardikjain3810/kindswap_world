@@ -12,6 +12,7 @@ import { Admin } from './entities/admin.entity';
 
 export const getDatabaseConfig = (): TypeOrmModuleOptions => {
   const isProduction = process.env.NODE_ENV === 'production';
+  const isDevelopment = process.env.NODE_ENV === 'development';
   const dbHost = process.env.DB_HOST || 'localhost';
   const isRemoteDb = dbHost !== 'localhost' && dbHost !== '127.0.0.1';
 
@@ -24,8 +25,9 @@ export const getDatabaseConfig = (): TypeOrmModuleOptions => {
     database: process.env.DB_NAME || 'kindsoul_db',
     entities: [User, UserPoints, SwapTransaction, FeeConfiguration, FeeTier, FeeConfigurationAudit, FeeTierAudit, ContributionSubmission, KnsAwardHistory, Admin],
 
-    // MIGRATIONS-FIRST APPROACH: Disabled synchronize, using migrations for all schema changes
-    synchronize: false, // Never auto-sync schema (use migrations instead)
+    // DEVELOPMENT: Use synchronize to auto-create tables from entities
+    // PRODUCTION: Use migrations for all schema changes
+    synchronize: isDevelopment, // Auto-sync schema in development, use migrations in production
     logging: !isProduction,
 
     // Enable migrations for production (run automatically on app start)

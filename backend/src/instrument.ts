@@ -9,9 +9,14 @@
  * - Source maps correlation via release versioning
  */
 
-// Load .env file before NestJS ConfigModule
+// Load .env files before NestJS ConfigModule (try .env.local first, then .env)
 import * as dotenv from 'dotenv';
-dotenv.config();
+import * as path from 'path';
+
+// Load environment variables from .env.local (for development) or .env (for production)
+const envPath = path.resolve(process.cwd(), '.env.local');
+const envExists = require('fs').existsSync(envPath);
+dotenv.config({ path: envExists ? '.env.local' : '.env' });
 
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
