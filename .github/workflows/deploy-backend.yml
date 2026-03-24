@@ -277,3 +277,5 @@ jobs:
           echo "Rollback attempted. Check pod status manually."
 
 # Triggering Dev Chain Pull Test
+
+# Final trigger: Backend Helm chart files are now tracked
