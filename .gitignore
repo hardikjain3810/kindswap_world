@@ -48,6 +48,12 @@ known_hosts
 *.tfstate.*
 .terraform/
 .terraform.lock.hcl
+
+# Large Binary Files
+*.tar
+*.tar.gz
+*.tar.bz2
+backend-image.tar
 override.tf
 override.tf.json
 *_override.tf
