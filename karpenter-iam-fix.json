@@ -1,0 +1,20 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateInstanceProfile",
+                "iam:GetInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:AddRoleToInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile",
+                "iam:PassRole",
+                "iam:TagInstanceProfile",
+                "iam:UntagInstanceProfile",
+                "pricing:GetProducts"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
