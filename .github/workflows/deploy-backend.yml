@@ -55,8 +55,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
 
       # ---------------------------------------------------------------
       # STEP 3 — npm audit gate (FAIL on HIGH or CRITICAL)
@@ -64,7 +62,7 @@ jobs:
       - name: npm audit — security gate
         working-directory: backend
         run: |
-          npm ci --prefer-offline
+          npm install
           npm audit --audit-level=high
           echo "✅ npm audit passed — no HIGH or CRITICAL vulnerabilities"
 
