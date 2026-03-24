@@ -241,6 +241,13 @@ jobs:
             exit 1
           fi
 
+          # Recover from stale Helm release state (e.g., failed install with no deployed revision)
+          RELEASE_STATUS=$(helm list --namespace ${{ steps.namespace.outputs.namespace }} --all --filter "^${{ env.HELM_RELEASE }}$" -o json | jq -r '.[0].status // ""')
+          if [ -n "$RELEASE_STATUS" ] && [ "$RELEASE_STATUS" != "deployed" ]; then
+            echo "⚠️ Existing release status is '$RELEASE_STATUS' (not deployed). Uninstalling stale release..."
+            helm uninstall ${{ env.HELM_RELEASE }} --namespace ${{ steps.namespace.outputs.namespace }} || true
+          fi
+
           helm upgrade --install ${{ env.HELM_RELEASE }} \
             "$CHART_PATH" \
             --namespace ${{ steps.namespace.outputs.namespace }} \
