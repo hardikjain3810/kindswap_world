@@ -229,8 +229,15 @@ jobs:
       # ---------------------------------------------------------------
       - name: Helm upgrade
         run: |
+          CHART_PATH=$(find . -type f -name Chart.yaml | grep '/kindswap-backend/Chart.yaml$' | head -n 1 | xargs dirname)
+          if [ -z "$CHART_PATH" ] || [ ! -f "$CHART_PATH/Chart.yaml" ]; then
+            echo "❌ Helm chart not found for kindswap-backend"
+            exit 1
+          fi
+          echo "Using Helm chart path: $CHART_PATH"
+
           helm upgrade --install ${{ env.HELM_RELEASE }} \
-            ./infra/infra/infra-k8s/05-apps/helm/kindswap-backend \
+            "$CHART_PATH" \
             --namespace ${{ steps.namespace.outputs.namespace }} \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
             --set image.tag=${{ steps.image-tag.outputs.tag }} \
