@@ -17,3 +17,5 @@ EXPOSE 3000
 CMD ["node", "dist/main.js"]
 
 # Triggering fresh SHA for ECR Immutable rule
+
+# Trigger CI after KMS permission fix
