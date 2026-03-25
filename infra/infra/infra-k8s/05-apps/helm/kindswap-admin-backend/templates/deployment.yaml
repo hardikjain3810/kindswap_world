@@ -15,6 +15,13 @@ spec:
         {{- include "kindswap-admin-backend.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      volumes:
+      - name: secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.secrets.secretProviderClass }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -41,30 +48,14 @@ spec:
           failureThreshold: 3
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: secrets
+          mountPath: {{ .Values.secrets.mountPath }}
+          readOnly: true
         env:
         - name: NODE_ENV
           value: {{ .Values.environment }}
         - name: DB_POOL_MAX
           value: "{{ index .Values.pgPool.max .Values.environment }}"
-        - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_host
-        - name: DB_PORT
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_port
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_user
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_password
-        - name: DB_NAME
-          value: kindswap
+        - name: DB_CREDENTIALS_PATH
+          value: {{ .Values.secrets.mountPath }}/db-credentials
