@@ -251,6 +251,9 @@ jobs:
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
             --set image.tag=${{ steps.image-tag.outputs.tag }} \
             --set environment=${{ steps.namespace.outputs.namespace }} \
+            --atomic \
+            --wait \
+            --timeout 10m \
             --debug \
             --history-max 5
           echo "✅ Helm upgrade complete"
@@ -286,6 +289,20 @@ jobs:
             --namespace ${{ steps.namespace.outputs.namespace }} \
             --timeout=5m
           echo "✅ Rollout verified — all pods Running"
+
+      # ---------------------------------------------------------------
+      # STEP 17 — Rollback fallback (defense-in-depth)
+      # ---------------------------------------------------------------
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          NS=${{ steps.namespace.outputs.namespace }}
+          echo "🔄 Deployment failed — attempting fallback rollback in namespace: $NS"
+          helm rollback ${{ env.HELM_RELEASE }} \
+            --namespace "$NS" \
+            --wait \
+            --timeout 3m || true
+          echo "Rollback fallback completed (or skipped if no prior revision)."
 
 # Triggering Dev Chain Pull Test
 
