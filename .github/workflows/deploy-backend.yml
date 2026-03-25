@@ -304,8 +304,3 @@ jobs:
             --timeout 3m || true
           echo "Rollback fallback completed (or skipped if no prior revision)."
 
-# Triggering Dev Chain Pull Test
-
-# Final trigger: Backend Helm chart files are now tracked
-
-# Trigger: force CI to redeploy with SHA image tag
