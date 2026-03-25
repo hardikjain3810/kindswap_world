@@ -81,6 +81,10 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/kindswap-github-actions-role
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Verify AWS identity
+        run: |
+          aws sts get-caller-identity
+
       # ---------------------------------------------------------------
       # STEP 5 — Login to ECR
       # ---------------------------------------------------------------
@@ -201,16 +205,7 @@ jobs:
       # Frontend is read-only, stateless deployment
 
       # ---------------------------------------------------------------
-      # STEP 13 — Update kubeconfig
-      # ---------------------------------------------------------------
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig \
-            --name ${{ env.EKS_CLUSTER }} \
-            --region ${{ env.AWS_REGION }}
-
-      # ---------------------------------------------------------------
-      # STEP 14 — Set deployment namespace
+      # STEP 13 — Set deployment namespace
       # ---------------------------------------------------------------
       - name: Set namespace
         id: namespace
@@ -222,6 +217,16 @@ jobs:
           else
             echo "namespace=dev" >> $GITHUB_OUTPUT
           fi
+
+      # ---------------------------------------------------------------
+      # STEP 14 — Update kubeconfig
+      # ---------------------------------------------------------------
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ env.EKS_CLUSTER }} \
+            --region ${{ env.AWS_REGION }}
+          kubectl cluster-info
 
       # ---------------------------------------------------------------
       # STEP 15 — Helm upgrade (atomic — auto-rollback on failure)
@@ -263,6 +268,15 @@ jobs:
         if: failure()
         run: |
           NS=${{ steps.namespace.outputs.namespace }}
+          if [ -z "$NS" ]; then
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              NS=production
+            elif [ "${{ github.ref_name }}" == "staging" ]; then
+              NS=staging
+            else
+              NS=dev
+            fi
+          fi
           echo "🔎 Collecting diagnostics in namespace: $NS"
           kubectl get all -n "$NS" -o wide || true
           kubectl get events -n "$NS" --sort-by=.lastTimestamp | tail -n 200 || true
@@ -295,6 +309,15 @@ jobs:
         if: failure()
         run: |
           NS=${{ steps.namespace.outputs.namespace }}
+          if [ -z "$NS" ]; then
+            if [ "${{ github.ref_name }}" == "main" ]; then
+              NS=production
+            elif [ "${{ github.ref_name }}" == "staging" ]; then
+              NS=staging
+            else
+              NS=dev
+            fi
+          fi
           echo "🔄 Deployment failed — attempting fallback rollback in namespace: $NS"
           helm rollback ${{ env.HELM_RELEASE }} \
             --namespace "$NS" \
