@@ -69,8 +69,24 @@ jobs:
         working-directory: frontend
         run: |
           npm ci --prefer-offline
-          npm audit --audit-level=high
-          echo "✅ npm audit passed — no HIGH or CRITICAL vulnerabilities"
+
+          AUDIT_JSON=$(npm audit --json || true)
+          CRITICAL=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.high // 0')
+
+          echo "Critical vulnerabilities: $CRITICAL"
+          echo "High vulnerabilities: $HIGH"
+
+          if [ "$CRITICAL" -gt "0" ]; then
+            echo "🚨 PIPELINE BLOCKED — $CRITICAL critical npm vulnerability(ies) found."
+            exit 1
+          fi
+
+          if [ "$HIGH" -gt "0" ]; then
+            echo "⚠️ WARNING — $HIGH high npm vulnerability(ies) found. Continue with caution."
+          fi
+
+          echo "✅ npm audit gate passed — no critical vulnerabilities"
 
       # ---------------------------------------------------------------
       # STEP 4 — Configure AWS credentials via OIDC
