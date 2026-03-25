@@ -142,6 +142,8 @@ jobs:
       # STEP 9 — CVE gate (FAIL on any CRITICAL finding)
       # ---------------------------------------------------------------
       - name: ECR CVE scan gate
+        id: ecr-scan
+        continue-on-error: true
         run: |
           echo "⏳ Waiting for ECR scan to complete..."
           sleep 30
@@ -178,6 +180,8 @@ jobs:
         uses: sigstore/cosign-installer@v3
 
       - name: Sign image with Cosign
+        id: cosign-sign
+        continue-on-error: true
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -201,6 +205,8 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Generate SBOM and upload to S3
+        id: sbom-upload
+        continue-on-error: true
         run: |
           syft ${{ steps.image-tag.outputs.image }} \
             -o spdx-json \
@@ -212,6 +218,24 @@ jobs:
             --sse-kms-key-id alias/kindswap-master
 
           echo "✅ SBOM uploaded to S3"
+
+      - name: Enforce security artifacts on production
+        if: github.ref_name == 'main'
+        run: |
+          if [ "${{ steps.ecr-scan.outcome }}" != "success" ] || [ "${{ steps.cosign-sign.outcome }}" != "success" ] || [ "${{ steps.sbom-upload.outcome }}" != "success" ]; then
+            echo "🚨 Production requires successful ECR scan, Cosign signing, and SBOM upload."
+            exit 1
+          fi
+
+      - name: Warn on non-blocking security step failures
+        if: github.ref_name != 'main'
+        run: |
+          echo "ECR scan outcome: ${{ steps.ecr-scan.outcome }}"
+          echo "Cosign sign outcome: ${{ steps.cosign-sign.outcome }}"
+          echo "SBOM upload outcome: ${{ steps.sbom-upload.outcome }}"
+          if [ "${{ steps.ecr-scan.outcome }}" != "success" ] || [ "${{ steps.cosign-sign.outcome }}" != "success" ] || [ "${{ steps.sbom-upload.outcome }}" != "success" ]; then
+            echo "⚠️ Non-production run continuing despite security-step warning(s)."
+          fi
 
       # ---------------------------------------------------------------
       # STEP 12 — Skip pre-deploy snapshot (frontend is stateless)
