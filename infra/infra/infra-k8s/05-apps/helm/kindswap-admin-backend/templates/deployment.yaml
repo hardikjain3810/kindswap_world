@@ -41,10 +41,6 @@ spec:
           failureThreshold: 3
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
-        volumeMounts:
-        - name: secrets
-          mountPath: {{ .Values.secrets.mountPath }}
-          readOnly: true
         env:
         - name: NODE_ENV
           value: {{ .Values.environment }}
@@ -72,10 +68,3 @@ spec:
               key: db_password
         - name: DB_NAME
           value: kindswap
-      volumes:
-      - name: secrets
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: kindswap-backend-{{ .Values.environment }}
