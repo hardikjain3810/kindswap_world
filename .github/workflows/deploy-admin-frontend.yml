@@ -66,7 +66,7 @@ jobs:
       - name: npm audit — security gate
         working-directory: 'admin panel/Admin-Panel'
         run: |
-          npm ci --prefer-offline
+          npm install --prefer-offline
 
           AUDIT_JSON=$(npm audit --json || true)
           CRITICAL=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.critical // 0')
