@@ -56,28 +56,38 @@ jobs:
       # STEP 1B — Ensure Admin Panel source is present
       # ---------------------------------------------------------------
       - name: Prepare Admin Panel source
+        id: admin-source
         run: |
           APP_DIR='admin panel/Admin-Panel'
 
           if [ -f "$APP_DIR/package.json" ]; then
             echo "✅ Admin Panel source found in workspace"
+            echo "source_available=true" >> $GITHUB_OUTPUT
           else
-            echo "ℹ️ Admin Panel submodule content missing; cloning source repository..."
+            echo "ℹ️ Admin Panel source missing in workspace."
             mkdir -p 'admin panel'
-            GIT_TERMINAL_PROMPT=0 git clone --depth 1 https://github.com/ksoul2/Admin-Panel.git "$APP_DIR"
-          fi
 
-          if [ ! -f "$APP_DIR/package.json" ]; then
-            echo "❌ Admin Panel source is unavailable: $APP_DIR/package.json not found"
-            exit 1
-          fi
+            if [ -n "${{ secrets.ADMIN_PANEL_REPO_TOKEN }}" ]; then
+              echo "🔐 Attempting authenticated clone of Admin Panel repository..."
+              GIT_TERMINAL_PROMPT=0 git clone --depth 1 "https://x-access-token:${{ secrets.ADMIN_PANEL_REPO_TOKEN }}@github.com/ksoul2/Admin-Panel.git" "$APP_DIR" || true
+            else
+              echo "ℹ️ ADMIN_PANEL_REPO_TOKEN is not configured; skipping clone attempt."
+            fi
 
-          echo "✅ Admin Panel source is ready"
+            if [ -f "$APP_DIR/package.json" ]; then
+              echo "✅ Admin Panel source cloned successfully"
+              echo "source_available=true" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ Admin Panel source remains unavailable. Workflow will deploy latest existing image from ECR."
+              echo "source_available=false" >> $GITHUB_OUTPUT
+            fi
+          fi
 
       # ---------------------------------------------------------------
       # STEP 2 — Setup Node (for npm audit)
       # ---------------------------------------------------------------
       - name: Setup Node.js
+        if: steps.admin-source.outputs.source_available == 'true'
         uses: actions/setup-node@v5
         with:
           node-version: '20'
@@ -86,6 +96,7 @@ jobs:
       # STEP 3 — npm audit gate (FAIL on HIGH or CRITICAL)
       # ---------------------------------------------------------------
       - name: npm audit — security gate
+        if: steps.admin-source.outputs.source_available == 'true'
         working-directory: 'admin panel/Admin-Panel'
         run: |
           npm install --prefer-offline
@@ -134,7 +145,24 @@ jobs:
       - name: Set image tag
         id: image-tag
         run: |
-          TAG="${{ github.sha }}"
+          if [ "${{ steps.admin-source.outputs.source_available }}" = "true" ]; then
+            TAG="${{ github.sha }}"
+            echo "Using current commit SHA as image tag: $TAG"
+          else
+            TAG=$(aws ecr describe-images \
+              --repository-name ${{ env.ECR_REPOSITORY }} \
+              --region ${{ env.AWS_REGION }} \
+              --query 'sort_by(imageDetails,&imagePushedAt)[-1].imageTags[0]' \
+              --output text 2>/dev/null || true)
+
+            if [ -z "$TAG" ] || [ "$TAG" = "None" ]; then
+              echo "❌ No existing image tag found in ECR for ${{ env.ECR_REPOSITORY }} and source is unavailable."
+              exit 1
+            fi
+
+            echo "Using latest existing ECR image tag: $TAG"
+          fi
+
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${TAG}" >> $GITHUB_OUTPUT
 
@@ -142,6 +170,7 @@ jobs:
       # STEP 7 — Build Vite → nginx (React static + reverse proxy)
       # ---------------------------------------------------------------
       - name: Build Docker image (Vite + nginx)
+        if: steps.admin-source.outputs.source_available == 'true'
         run: |
           docker build \
             --build-arg NODE_ENV=production \
@@ -150,18 +179,30 @@ jobs:
             'admin panel/Admin-Panel/'
           echo "✅ Docker build complete — Vite + nginx:alpine"
 
+      - name: Skip build when source is unavailable
+        if: steps.admin-source.outputs.source_available != 'true'
+        run: |
+          echo "⚠️ Skipping Docker build because Admin Panel source is unavailable."
+
       # ---------------------------------------------------------------
       # STEP 8 — Push to ECR
       # ---------------------------------------------------------------
       - name: Push to ECR
+        if: steps.admin-source.outputs.source_available == 'true'
         run: |
           docker push ${{ steps.image-tag.outputs.image }}
           echo "✅ Pushed to ECR: ${{ steps.image-tag.outputs.image }}"
+
+      - name: Skip image push when source is unavailable
+        if: steps.admin-source.outputs.source_available != 'true'
+        run: |
+          echo "⚠️ Skipping ECR push because existing image tag is being reused."
 
       # ---------------------------------------------------------------
       # STEP 9 — CVE gate (FAIL on any CRITICAL finding)
       # ---------------------------------------------------------------
       - name: ECR CVE scan gate
+        if: steps.admin-source.outputs.source_available == 'true'
         id: ecr-scan
         continue-on-error: true
         run: |
@@ -197,9 +238,11 @@ jobs:
       # STEP 10 — Cosign image signing
       # ---------------------------------------------------------------
       - name: Install Cosign
+        if: steps.admin-source.outputs.source_available == 'true'
         uses: sigstore/cosign-installer@v3
 
       - name: Sign image with Cosign
+        if: steps.admin-source.outputs.source_available == 'true'
         id: cosign-sign
         continue-on-error: true
         env:
@@ -221,10 +264,12 @@ jobs:
       # STEP 11 — SBOM generation (syft → S3)
       # ---------------------------------------------------------------
       - name: Install syft
+        if: steps.admin-source.outputs.source_available == 'true'
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Generate SBOM and upload to S3
+        if: steps.admin-source.outputs.source_available == 'true'
         id: sbom-upload
         continue-on-error: true
         run: |
@@ -240,7 +285,7 @@ jobs:
           echo "✅ SBOM uploaded to S3"
 
       - name: Enforce security artifacts on production
-        if: github.ref_name == 'main'
+        if: github.ref_name == 'main' && steps.admin-source.outputs.source_available == 'true'
         run: |
           if [ "${{ steps.ecr-scan.outcome }}" != "success" ] || [ "${{ steps.cosign-sign.outcome }}" != "success" ] || [ "${{ steps.sbom-upload.outcome }}" != "success" ]; then
             echo "🚨 Production requires successful ECR scan, Cosign signing, and SBOM upload."
@@ -248,7 +293,7 @@ jobs:
           fi
 
       - name: Warn on non-blocking security step failures
-        if: github.ref_name != 'main'
+        if: github.ref_name != 'main' && steps.admin-source.outputs.source_available == 'true'
         run: |
           echo "ECR scan outcome: ${{ steps.ecr-scan.outcome }}"
           echo "Cosign sign outcome: ${{ steps.cosign-sign.outcome }}"
@@ -256,6 +301,11 @@ jobs:
           if [ "${{ steps.ecr-scan.outcome }}" != "success" ] || [ "${{ steps.cosign-sign.outcome }}" != "success" ] || [ "${{ steps.sbom-upload.outcome }}" != "success" ]; then
             echo "⚠️ Non-production run continuing despite security-step warning(s)."
           fi
+
+      - name: Note fallback deployment mode
+        if: steps.admin-source.outputs.source_available != 'true'
+        run: |
+          echo "⚠️ Admin frontend deployed in fallback mode using existing ECR image because source repository is not accessible from CI."
 
       # ---------------------------------------------------------------
       # STEP 12 — Skip pre-deploy snapshot (frontend is stateless)
