@@ -44,6 +44,8 @@ spec:
           env:
             - name: NODE_ENV
               value: {{ .Values.environment }}
+            - name: DB_NAME
+              value: {{ if eq .Values.environment "production" }}"kindswap_production"{{ else }}"kindswap_staging"{{ end }}
             - name: DB_CREDENTIALS_PATH
               value: /mnt/secrets/db-credentials
             - name: PG_POOL_MAX
