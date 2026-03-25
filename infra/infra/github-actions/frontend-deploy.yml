@@ -1,0 +1,105 @@
+name: Frontend Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      invalidate_cache:
+        description: "Force CloudFront cache invalidation"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: "20"
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Frontend
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+        env:
+          NODE_ENV: production
+          VITE_API_URL: https://api.kindswap.world
+          VITE_COGNITO_REGION: us-east-1
+          VITE_COGNITO_USER_POOL_ID: ${{ secrets.COGNITO_USER_POOL_ID }}
+          VITE_COGNITO_CLIENT_ID: ${{ secrets.COGNITO_FRONTEND_CLIENT_ID }}
+          VITE_COGNITO_DOMAIN: ${{ secrets.COGNITO_DOMAIN }}
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: GitHubActions-FrontendDeploy-${{ github.run_id }}
+
+      - name: Sync build output to S3
+        env:
+          S3_BUCKET: ${{ secrets.FRONTEND_S3_BUCKET }}
+        run: |
+          # Sync all files, delete removed files
+          aws s3 sync ./dist "s3://$S3_BUCKET" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html" \
+            --exclude "*.json" \
+            --region "$AWS_REGION"
+
+          # Upload HTML files with no-cache headers (for SPA routing)
+          aws s3 sync ./dist "s3://$S3_BUCKET" \
+            --delete \
+            --cache-control "public, no-cache, must-revalidate" \
+            --exclude "*" \
+            --include "index.html" \
+            --include "*.json" \
+            --region "$AWS_REGION"
+
+      - name: Invalidate CloudFront cache
+        if: ${{ github.event.inputs.invalidate_cache != 'false' }}
+        env:
+          CF_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id "$CF_DISTRIBUTION_ID" \
+            --paths "/*" \
+            --query 'Invalidation.Id' \
+            --output text)
+
+          echo "CloudFront invalidation created: $INVALIDATION_ID"
+          echo "Waiting for invalidation to complete..."
+
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$CF_DISTRIBUTION_ID" \
+            --id "$INVALIDATION_ID"
+
+          echo "CloudFront cache invalidated successfully."
+
+      - name: Print deployment summary
+        run: |
+          echo "=== Frontend Deployment Complete ==="
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "S3 Bucket: ${{ secrets.FRONTEND_S3_BUCKET }}"
+          echo "Site URL: https://kindswap.world"

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: kind-swap-backend
+description: Helm chart for the kind_swap backend API service
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - kind_swap
+  - backend
+  - api
+maintainers:
+  - name: kind_swap team
