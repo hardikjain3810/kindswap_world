@@ -1,6 +1,7 @@
 name: Deploy — KindSwap Admin Backend
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
@@ -8,6 +9,7 @@ on:
       - main
     paths:
       - 'admin backend/**'
+      - 'infra/infra/infra-k8s/05-apps/helm/kindswap-admin-backend/**'
       - '.github/workflows/deploy-admin-backend.yml'
 
 permissions:
@@ -154,7 +156,11 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
-          echo "$COSIGN_PRIVATE_KEY" > /tmp/cosign.key
+          printf '%s' "$COSIGN_PRIVATE_KEY" | tr -d '\r' > /tmp/cosign.key
+          head -n 1 /tmp/cosign.key
+          tail -n 1 /tmp/cosign.key
+          grep -Eq '^-----BEGIN ENCRYPTED (COSIGN|SIGSTORE) PRIVATE KEY-----$' /tmp/cosign.key
+          grep -Eq '^-----END ENCRYPTED (COSIGN|SIGSTORE) PRIVATE KEY-----$' /tmp/cosign.key
           cosign sign --key /tmp/cosign.key \
             --yes \
             ${{ steps.image-tag.outputs.image }}
@@ -222,17 +228,55 @@ jobs:
       # ---------------------------------------------------------------
       - name: Helm upgrade
         run: |
+          CHART_PATH="./infra/infra/infra-k8s/05-apps/helm/kindswap-admin-backend"
+          echo "Using Helm chart path: $CHART_PATH"
+          if [ ! -f "$CHART_PATH/Chart.yaml" ]; then
+            echo "❌ Expected chart not found at $CHART_PATH"
+            find . -name "Chart.yaml"
+            exit 1
+          fi
+
+          # Recover from stale Helm release state (e.g., failed install with no deployed revision)
+          RELEASE_STATUS=$(helm list --namespace ${{ steps.namespace.outputs.namespace }} --all --filter "^${{ env.HELM_RELEASE }}$" -o json | jq -r '.[0].status // ""')
+          if [ -n "$RELEASE_STATUS" ] && [ "$RELEASE_STATUS" != "deployed" ]; then
+            echo "⚠️ Existing release status is '$RELEASE_STATUS' (not deployed). Uninstalling stale release..."
+            helm uninstall ${{ env.HELM_RELEASE }} --namespace ${{ steps.namespace.outputs.namespace }} || true
+          fi
+
           helm upgrade --install ${{ env.HELM_RELEASE }} \
-            infra/infra/infra-k8s/05-apps/helm/kindswap-admin-backend \
+            "$CHART_PATH" \
             --namespace ${{ steps.namespace.outputs.namespace }} \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }} \
             --set image.tag=${{ steps.image-tag.outputs.tag }} \
             --set environment=${{ steps.namespace.outputs.namespace }} \
             --atomic \
             --wait \
-            --timeout 5m \
+            --timeout 10m \
+            --debug \
             --history-max 5
           echo "✅ Helm upgrade complete"
+
+      # ---------------------------------------------------------------
+      # STEP 15B — Dump diagnostics when deploy fails
+      # ---------------------------------------------------------------
+      - name: Dump Kubernetes diagnostics on failure
+        if: failure()
+        run: |
+          NS=${{ steps.namespace.outputs.namespace }}
+          echo "🔎 Collecting diagnostics in namespace: $NS"
+          kubectl get all -n "$NS" -o wide || true
+          kubectl get events -n "$NS" --sort-by=.lastTimestamp | tail -n 200 || true
+          kubectl describe deployment/${{ env.HELM_RELEASE }} -n "$NS" || true
+
+          PODS=$(kubectl get pods -n "$NS" -l app=kindswap-admin-backend -o jsonpath='{.items[*].metadata.name}' 2>/dev/null || true)
+          for p in $PODS; do
+            echo "===== describe pod/$p ====="
+            kubectl describe pod "$p" -n "$NS" || true
+            echo "===== logs pod/$p ====="
+            kubectl logs "$p" -n "$NS" --all-containers=true --tail=300 || true
+            echo "===== previous logs pod/$p ====="
+            kubectl logs "$p" -n "$NS" --all-containers=true --previous --tail=300 || true
+          done
 
       # ---------------------------------------------------------------
       # STEP 16 — Verify rollout
@@ -250,9 +294,10 @@ jobs:
       - name: Rollback on failure
         if: failure()
         run: |
-          echo "🔄 Deployment failed — rolling back..."
+          NS=${{ steps.namespace.outputs.namespace }}
+          echo "🔄 Deployment failed — attempting fallback rollback in namespace: $NS"
           helm rollback ${{ env.HELM_RELEASE }} \
-            --namespace ${{ steps.namespace.outputs.namespace }} \
+            --namespace "$NS" \
             --wait \
             --timeout 3m || true
-          echo "Rollback attempted. Check pod status manually."
+          echo "Rollback fallback completed (or skipped if no prior revision)."
