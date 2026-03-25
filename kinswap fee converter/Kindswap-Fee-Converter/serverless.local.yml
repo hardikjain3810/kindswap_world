@@ -1,0 +1,80 @@
+# Local development configuration for Serverless Framework
+# Use this for local testing without AWS credentials
+# Usage: serverless invoke local -f functionName --config serverless.local.yml
+
+service: lambda-fee-converter
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ap-south-1
+  stage: local
+  memorySize: 512
+  timeout: 60
+
+  # Local environment variables (no SSM parameters)
+  environment:
+    NODE_ENV: development
+    DB_HOST: postgres
+    DB_PORT: 5432
+    DB_NAME: kindsoul_fee_conversion
+    DB_USER: postgres
+    DB_PASSWORD: postgres_local_password
+    OPS_WALLET_ADDRESS: ${env:OPS_WALLET_ADDRESS, ''}
+    OPS_WALLET_KMS_KEY_ID: test-kms-key-id
+    HELIUS_API_KEY: ${env:HELIUS_API_KEY, 'test-api-key'}
+    HELIUS_RPC_URL: https://mainnet.helius-rpc.com/?api-key=${env:HELIUS_API_KEY, 'test-api-key'}
+    JUPITER_API_URL: https://quote-api.jup.ag/v6
+    USDC_MINT: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+    CONVERSION_QUEUE_URL: http://localhost:4566/000000000000/conversion-jobs
+    AWS_ENDPOINT: http://localstack:4566
+    AWS_ACCESS_KEY_ID: test
+    AWS_SECRET_ACCESS_KEY: test
+    AWS_REGION: ap-south-1
+
+# Disable built-in esbuild to avoid conflicts
+build:
+  esbuild: false
+
+# Plugin configuration (removed serverless-esbuild plugin to avoid conflict)
+# Using built-in TypeScript support instead
+
+# Lambda Functions (simplified for local testing)
+# NOTE: Handlers point to dist/ folder (compiled JavaScript)
+# Run 'npm run build' before testing
+functions:
+  # 1. Fee Indexer
+  feeIndexer:
+    handler: dist/functions/fee-indexer/index.handler.js
+    memorySize: 512
+    timeout: 60
+    description: Monitor Ops wallet and record incoming fee deposits
+    environment:
+      FUNCTION_NAME: fee-indexer
+
+  # 2. Conversion Planner
+  conversionPlanner:
+    handler: dist/functions/conversion-planner/index.handler.js
+    memorySize: 512
+    timeout: 120
+    description: Decide which tokens to convert and create jobs
+    environment:
+      FUNCTION_NAME: conversion-planner
+
+  # 3. Conversion Executor
+  conversionExecutor:
+    handler: dist/functions/conversion-executor/index.handler.js
+    memorySize: 1024
+    timeout: 180
+    description: Execute token to USDC swap on Solana
+    environment:
+      FUNCTION_NAME: conversion-executor
+
+  # 4. USDC Distributor
+  usdcDistributor:
+    handler: dist/functions/usdc-distributor/index.handler.js
+    memorySize: 512
+    timeout: 120
+    description: Distribute accumulated USDC to cold wallets
+    environment:
+      FUNCTION_NAME: usdc-distributor

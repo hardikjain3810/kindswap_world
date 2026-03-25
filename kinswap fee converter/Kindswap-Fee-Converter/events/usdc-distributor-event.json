@@ -1,0 +1,13 @@
+{
+  "version": "0",
+  "id": "test-event-id-999",
+  "detail-type": "Scheduled Event",
+  "source": "aws.events",
+  "account": "000000000000",
+  "time": "2026-03-12T09:00:00Z",
+  "region": "ap-south-1",
+  "resources": [
+    "arn:aws:events:ap-south-1:000000000000:rule/usdc-distributor-schedule-local"
+  ],
+  "detail": {}
+}

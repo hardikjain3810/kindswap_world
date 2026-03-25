@@ -1,0 +1,249 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: revinfotech
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: kindswap-fee-converter
+service: lambda-fee-converter
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${opt:region, 'ap-south-1'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 60
+  architecture: arm64 # Use ARM for cost savings
+
+  # VPC Configuration (for RDS access)
+  vpc:
+    securityGroupIds:
+      - ${ssm:/fee-conversion/${self:provider.stage}/security-group-id}
+    subnetIds:
+      - ${ssm:/fee-conversion/${self:provider.stage}/subnet-id-1}
+      - ${ssm:/fee-conversion/${self:provider.stage}/subnet-id-2}
+
+  # Environment variables available to all functions
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    DB_HOST: ${ssm:/fee-conversion/${self:provider.stage}/db-host}
+    DB_NAME: kindsoul_fee_conversion
+    DB_USER: postgres
+    DB_PASSWORD: ${ssm:/fee-conversion/${self:provider.stage}/db-password}
+    OPS_WALLET_ADDRESS: ${ssm:/fee-conversion/${self:provider.stage}/ops-wallet}
+    OPS_WALLET_KMS_KEY_ID: ${ssm:/fee-conversion/${self:provider.stage}/kms-key-id}
+    HELIUS_API_KEY: ${ssm:/fee-conversion/${self:provider.stage}/helius-api-key}
+    HELIUS_RPC_URL: https://mainnet.helius-rpc.com/?api-key=${ssm:/fee-conversion/${self:provider.stage}/helius-api-key}
+    JUPITER_API_URL: https://quote-api.jup.ag/v6
+    USDC_MINT: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+    CONVERSION_QUEUE_URL: !Ref ConversionQueue
+    SENTRY_DSN: ${ssm:/fee-conversion/${self:provider.stage}/sentry-dsn}
+
+  # IAM permissions
+  iam:
+    role:
+      statements:
+        # KMS decrypt for wallet keys
+        - Effect: Allow
+          Action:
+            - kms:Decrypt
+          Resource: ${ssm:/fee-conversion/${self:provider.stage}/kms-key-arn}
+
+        # Secrets Manager access
+        - Effect: Allow
+          Action:
+            - secretsmanager:GetSecretValue
+          Resource: arn:aws:secretsmanager:${self:provider.region}:*:secret:/fee-conversion/*
+
+        # SQS access
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource: !GetAtt ConversionQueue.Arn
+
+        # CloudWatch Logs
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: arn:aws:logs:${self:provider.region}:*:log-group:/aws/lambda/*
+
+  # Tags for all resources
+  tags:
+    Project: fee-conversion
+    Environment: ${self:provider.stage}
+    ManagedBy: serverless
+
+# Plugin configuration
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+    sourcemap: true
+    exclude:
+      - 'aws-sdk'
+    target: node20
+    platform: node
+    concurrency: 10
+
+  serverless-offline:
+    httpPort: 3000
+    lambdaPort: 3002
+
+# Lambda Functions
+functions:
+  # 1. Fee Indexer - Runs every 10 seconds
+  feeIndexer:
+    handler: src/functions/fee-indexer/index.handler
+    memorySize: 512
+    timeout: 60
+    reservedConcurrency: 1
+    description: Monitor Ops wallet and record incoming fee deposits
+    events:
+      - schedule:
+          name: fee-indexer-schedule-${self:provider.stage}
+          description: Trigger fee indexer every 10 seconds
+          rate: rate(10 seconds)
+          enabled: true
+    environment:
+      FUNCTION_NAME: fee-indexer
+
+  # 2. Conversion Planner - Runs every 15 minutes
+  conversionPlanner:
+    handler: src/functions/conversion-planner/index.handler
+    memorySize: 512
+    timeout: 120
+    reservedConcurrency: 1
+    description: Decide which tokens to convert and create jobs
+    events:
+      - schedule:
+          name: conversion-planner-schedule-${self:provider.stage}
+          description: Trigger conversion planner every 15 minutes
+          rate: rate(15 minutes)
+          enabled: true
+    environment:
+      FUNCTION_NAME: conversion-planner
+
+  # 3. Conversion Executor - Triggered by SQS
+  conversionExecutor:
+    handler: src/functions/conversion-executor/index.handler
+    memorySize: 1024
+    timeout: 180
+    reservedConcurrency: 5
+    description: Execute token to USDC swap on Solana
+    events:
+      - sqs:
+          arn: !GetAtt ConversionQueue.Arn
+          batchSize: 1
+          maximumBatchingWindowInSeconds: 0
+    environment:
+      FUNCTION_NAME: conversion-executor
+
+  # 4. USDC Distributor - Runs every 1 hour
+  usdcDistributor:
+    handler: src/functions/usdc-distributor/index.handler
+    memorySize: 512
+    timeout: 120
+    reservedConcurrency: 1
+    description: Distribute accumulated USDC to 4 cold wallets
+    events:
+      - schedule:
+          name: usdc-distributor-schedule-${self:provider.stage}
+          description: Trigger USDC distributor every hour
+          rate: rate(1 hour)
+          enabled: true
+    environment:
+      FUNCTION_NAME: usdc-distributor
+      TREASURY_COLD_WALLET: ${ssm:/fee-conversion/${self:provider.stage}/treasury-wallet}
+      CHARITY_COLD_WALLET: ${ssm:/fee-conversion/${self:provider.stage}/charity-wallet}
+      STAKING_COLD_WALLET: ${ssm:/fee-conversion/${self:provider.stage}/staking-wallet}
+      REBATE_COLD_WALLET: ${ssm:/fee-conversion/${self:provider.stage}/rebate-wallet}
+
+# AWS Resources
+resources:
+  Resources:
+    # SQS Queue for conversion jobs
+    ConversionQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: conversion-jobs-${self:provider.stage}
+        VisibilityTimeout: 300
+        MessageRetentionPeriod: 86400 # 1 day
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt ConversionDLQ.Arn
+          maxReceiveCount: 3
+        Tags:
+          - Key: Project
+            Value: fee-conversion
+          - Key: Environment
+            Value: ${self:provider.stage}
+
+    # Dead Letter Queue
+    ConversionDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: conversion-jobs-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600 # 14 days
+        Tags:
+          - Key: Project
+            Value: fee-conversion
+          - Key: Environment
+            Value: ${self:provider.stage}
+
+    # CloudWatch Alarm for DLQ messages
+    DLQAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: fee-conversion-dlq-alarm-${self:provider.stage}
+        AlarmDescription: Alert when messages arrive in DLQ
+        MetricName: ApproximateNumberOfMessagesVisible
+        Namespace: AWS/SQS
+        Statistic: Sum
+        Period: 300
+        EvaluationPeriods: 1
+        Threshold: 1
+        ComparisonOperator: GreaterThanOrEqualToThreshold
+        Dimensions:
+          - Name: QueueName
+            Value: !GetAtt ConversionDLQ.QueueName
+        TreatMissingData: notBreaching
+
+    # CloudWatch Alarm for Lambda errors
+    LambdaErrorAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        AlarmName: fee-conversion-lambda-errors-${self:provider.stage}
+        AlarmDescription: Alert on Lambda function errors
+        MetricName: Errors
+        Namespace: AWS/Lambda
+        Statistic: Sum
+        Period: 300
+        EvaluationPeriods: 1
+        Threshold: 5
+        ComparisonOperator: GreaterThanThreshold
+        TreatMissingData: notBreaching
+
+  Outputs:
+    ConversionQueueUrl:
+      Description: URL of the conversion jobs SQS queue
+      Value: !Ref ConversionQueue
+      Export:
+        Name: ${self:provider.stage}-ConversionQueueUrl
+
+    ConversionQueueArn:
+      Description: ARN of the conversion jobs SQS queue
+      Value: !GetAtt ConversionQueue.Arn
+      Export:
+        Name: ${self:provider.stage}-ConversionQueueArn
+
+    ConversionDLQUrl:
+      Description: URL of the DLQ
+      Value: !Ref ConversionDLQ
+      Export:
+        Name: ${self:provider.stage}-ConversionDLQUrl

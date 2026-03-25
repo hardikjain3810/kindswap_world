@@ -1,0 +1,148 @@
+version: '3.9'
+
+services:
+  # PostgreSQL 16 with TimescaleDB extension
+  postgres:
+    image: timescale/timescaledb:latest-pg16
+    container_name: fee-converter-db
+    environment:
+      POSTGRES_DB: kindsoul_fee_conversion
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_local_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fee-converter-network
+    restart: unless-stopped
+
+  # LocalStack for AWS services emulation (SQS, KMS, Secrets Manager)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: fee-converter-localstack
+    environment:
+      SERVICES: sqs,kms,secretsmanager,s3
+      DEBUG: 1
+      DATA_DIR: /var/lib/localstack
+      LAMBDA_EXECUTOR: docker
+      DOCKER_HOST: unix:///var/run/docker.sock
+      AWS_DEFAULT_REGION: ap-south-1
+      EDGE_PORT: 4566
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    volumes:
+      - localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/init-aws.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fee-converter-network
+    restart: unless-stopped
+
+  # Lambda Fee Converter Application (Development)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: fee-converter-app
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: kindsoul_fee_conversion
+      DB_USER: postgres
+      DB_PASSWORD: postgres_local_password
+      AWS_REGION: ap-south-1
+      AWS_ENDPOINT: http://localstack:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      HELIUS_API_KEY: ${HELIUS_API_KEY:-your_helius_api_key}
+      JUPITER_API_URL: https://quote-api.jup.ag/v6
+      OPS_WALLET_ADDRESS: ${OPS_WALLET_ADDRESS:-}
+      USDC_MINT: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+      LOG_LEVEL: debug
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - app-node-modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    networks:
+      - fee-converter-network
+    restart: unless-stopped
+    command: npm run dev
+
+  # Redis for caching (optional but recommended for production)
+  redis:
+    image: redis:7-alpine
+    container_name: fee-converter-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fee-converter-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # PgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fee-converter-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@kindsoul.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - fee-converter-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+networks:
+  fee-converter-network:
+    driver: bridge
+    name: fee-converter-network
+
+volumes:
+  postgres-data:
+    driver: local
+  localstack-data:
+    driver: local
+  redis-data:
+    driver: local
+  pgadmin-data:
+    driver: local
+  app-node-modules:
+    driver: local

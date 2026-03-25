@@ -1,0 +1,31 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Anchor
+target/
+dist/
+.cache/
+.anchor/
+
+# Solana
+**/*.so
+**/*.keypair.json
+
+# Local validator ledger
+test-ledger/
+ledger/
+
+# Environment files
+.env
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Rust
+**/*.rs.bk

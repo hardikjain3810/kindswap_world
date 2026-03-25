@@ -1,0 +1,93 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+circle.yml
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+# package-lock.json  # Commented out - needed for npm ci in Docker build
+yarn.lock
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.spec.ts
+*.integration.test.ts
+# jest.config.js  # Commented out - needed for Docker build
+src/tests
+
+# Build artifacts
+dist
+build
+.serverless
+*.log
+
+# Environment files (except example)
+.env
+.env.*
+!.env.example
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+*.md
+!package.json
+
+# IDE and editors
+.idea
+.vscode
+.DS_Store
+*.swp
+*.swo
+*.swn
+.editorconfig
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+!Dockerfile
+
+# Temporary files
+tmp
+temp
+*.tmp
+*.temp
+
+# Miscellaneous
+# .prettierrc  # Commented out - needed for Docker build
+.prettierignore
+# .eslintrc.js  # Commented out - needed for Docker build
+.eslintignore
+# tsconfig*.json  # Commented out - needed for Docker build
+# !tsconfig.prod.json
+
+# AWS and credentials
+.aws
+*.pem
+*.key
+credentials
+secrets/
+
+# Database files
+*.db
+*.sqlite
+migrations/
+scripts/
+
+# Local development
+localstack/
+pgadmin/
+
+# OS files
+.DS_Store
+Thumbs.db

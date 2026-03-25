@@ -1,0 +1,121 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.serverless/
+
+# Testing
+coverage/
+.nyc_output
+*.lcov
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+!.env.example
+!.env.development
+!.env.test
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE and editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*.swn
+*~
+.project
+.classpath
+.c9/
+*.sublime-workspace
+*.sublime-project
+
+# TypeScript
+*.tsbuildinfo
+.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# AWS
+.aws/
+*.pem
+*.key
+credentials
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.yarn/
+
+# Miscellaneous
+*.pid
+*.seed
+*.pid.lock
+.cache
+.parcel-cache
+.npm
+.eslintcache
+.stylelintcache
+.firebase/
+
+# Secrets and credentials
+secrets/
+*.secret
+*.private
+wallet-keys/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Sentry
+.sentryclirc
+temp_auto_push.bat
+temp_interactive_push.bat
