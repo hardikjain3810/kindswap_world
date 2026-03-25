@@ -113,10 +113,24 @@ jobs:
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${TAG}" >> $GITHUB_OUTPUT
 
+      - name: Check if image tag already exists in ECR
+        id: image-exists
+        run: |
+          if aws ecr describe-images \
+            --repository-name ${{ env.ECR_REPOSITORY }} \
+            --image-ids imageTag=${{ steps.image-tag.outputs.tag }} \
+            --region ${{ env.AWS_REGION }} >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "ℹ️ Image tag already exists in ECR; reusing existing image."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       # ---------------------------------------------------------------
       # STEP 7 — Docker build (node:20-slim runtime)
       # ---------------------------------------------------------------
       - name: Build Docker image
+        if: steps.image-exists.outputs.exists != 'true'
         run: |
           docker build \
             --build-arg NODE_ENV=production \
@@ -129,6 +143,7 @@ jobs:
       # STEP 8 — Push to ECR (IMMUTABLE tag)
       # ---------------------------------------------------------------
       - name: Push to ECR
+        if: steps.image-exists.outputs.exists != 'true'
         run: |
           docker push ${{ steps.image-tag.outputs.image }}
           echo "✅ Pushed to ECR: ${{ steps.image-tag.outputs.image }}"
@@ -137,6 +152,7 @@ jobs:
       # STEP 9 — CVE gate (FAIL on any CRITICAL finding)
       # ---------------------------------------------------------------
       - name: ECR CVE scan gate
+        if: steps.image-exists.outputs.exists != 'true'
         run: |
           echo "⏳ Waiting for ECR scan to complete..."
           sleep 30
@@ -171,9 +187,11 @@ jobs:
       # STEP 10 — Cosign image signing
       # ---------------------------------------------------------------
       - name: Install Cosign
+        if: steps.image-exists.outputs.exists != 'true'
         uses: sigstore/cosign-installer@v3
 
       - name: Sign image with Cosign
+        if: steps.image-exists.outputs.exists != 'true'
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -193,10 +211,12 @@ jobs:
       # STEP 11 — SBOM generation (syft → S3)
       # ---------------------------------------------------------------
       - name: Install syft
+        if: steps.image-exists.outputs.exists != 'true'
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Generate SBOM and upload to S3
+        if: steps.image-exists.outputs.exists != 'true'
         run: |
           syft ${{ steps.image-tag.outputs.image }} \
             -o spdx-json \
@@ -208,6 +228,11 @@ jobs:
             --sse-kms-key-id alias/kindswap-master
 
           echo "✅ SBOM uploaded to S3"
+
+      - name: Note image reuse mode
+        if: steps.image-exists.outputs.exists == 'true'
+        run: |
+          echo "⚠️ Reusing existing immutable image tag: ${{ steps.image-tag.outputs.tag }}"
 
       # ---------------------------------------------------------------
       # STEP 12 — Pre-deploy RDS snapshot (production only)

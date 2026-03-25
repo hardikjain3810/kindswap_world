@@ -167,11 +167,24 @@ jobs:
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${TAG}" >> $GITHUB_OUTPUT
 
+      - name: Check if image tag already exists in ECR
+        id: image-exists
+        run: |
+          if aws ecr describe-images \
+            --repository-name ${{ env.ECR_REPOSITORY }} \
+            --image-ids imageTag=${{ steps.image-tag.outputs.tag }} \
+            --region ${{ env.AWS_REGION }} >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "ℹ️ Image tag already exists in ECR; reusing existing image."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       # ---------------------------------------------------------------
       # STEP 7 — Build Vite → nginx (React static + reverse proxy)
       # ---------------------------------------------------------------
       - name: Build Docker image (Vite + nginx)
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         run: |
           docker build \
             --build-arg NODE_ENV=production \
@@ -181,21 +194,21 @@ jobs:
           echo "✅ Docker build complete — Vite + nginx:alpine"
 
       - name: Skip build when source is unavailable
-        if: steps.admin-source.outputs.source_available != 'true'
+        if: steps.admin-source.outputs.source_available != 'true' || steps.image-exists.outputs.exists == 'true'
         run: |
-          echo "⚠️ Skipping Docker build because Admin Panel source is unavailable."
+          echo "⚠️ Skipping Docker build because source is unavailable or immutable image tag already exists."
 
       # ---------------------------------------------------------------
       # STEP 8 — Push to ECR
       # ---------------------------------------------------------------
       - name: Push to ECR
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         run: |
           docker push ${{ steps.image-tag.outputs.image }}
           echo "✅ Pushed to ECR: ${{ steps.image-tag.outputs.image }}"
 
       - name: Skip image push when source is unavailable
-        if: steps.admin-source.outputs.source_available != 'true'
+        if: steps.admin-source.outputs.source_available != 'true' || steps.image-exists.outputs.exists == 'true'
         run: |
           echo "⚠️ Skipping ECR push because existing image tag is being reused."
 
@@ -203,7 +216,7 @@ jobs:
       # STEP 9 — CVE gate (FAIL on any CRITICAL finding)
       # ---------------------------------------------------------------
       - name: ECR CVE scan gate
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         id: ecr-scan
         continue-on-error: true
         run: |
@@ -239,11 +252,11 @@ jobs:
       # STEP 10 — Cosign image signing
       # ---------------------------------------------------------------
       - name: Install Cosign
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         uses: sigstore/cosign-installer@v3
 
       - name: Sign image with Cosign
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         id: cosign-sign
         continue-on-error: true
         env:
@@ -265,12 +278,12 @@ jobs:
       # STEP 11 — SBOM generation (syft → S3)
       # ---------------------------------------------------------------
       - name: Install syft
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Generate SBOM and upload to S3
-        if: steps.admin-source.outputs.source_available == 'true'
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         id: sbom-upload
         continue-on-error: true
         run: |
@@ -286,7 +299,7 @@ jobs:
           echo "✅ SBOM uploaded to S3"
 
       - name: Enforce security artifacts on production
-        if: github.ref_name == 'main' && steps.admin-source.outputs.source_available == 'true'
+        if: github.ref_name == 'main' && steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         run: |
           if [ "${{ steps.ecr-scan.outcome }}" != "success" ] || [ "${{ steps.cosign-sign.outcome }}" != "success" ] || [ "${{ steps.sbom-upload.outcome }}" != "success" ]; then
             echo "🚨 Production requires successful ECR scan, Cosign signing, and SBOM upload."
@@ -294,7 +307,7 @@ jobs:
           fi
 
       - name: Warn on non-blocking security step failures
-        if: github.ref_name != 'main' && steps.admin-source.outputs.source_available == 'true'
+        if: github.ref_name != 'main' && steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists != 'true'
         run: |
           echo "ECR scan outcome: ${{ steps.ecr-scan.outcome }}"
           echo "Cosign sign outcome: ${{ steps.cosign-sign.outcome }}"
@@ -307,6 +320,11 @@ jobs:
         if: steps.admin-source.outputs.source_available != 'true'
         run: |
           echo "⚠️ Admin frontend deployed in fallback mode using existing ECR image because source repository is not accessible from CI."
+
+      - name: Note image reuse mode
+        if: steps.admin-source.outputs.source_available == 'true' && steps.image-exists.outputs.exists == 'true'
+        run: |
+          echo "⚠️ Reusing existing immutable image tag: ${{ steps.image-tag.outputs.tag }}"
 
       # ---------------------------------------------------------------
       # STEP 12 — Skip pre-deploy snapshot (frontend is stateless)
