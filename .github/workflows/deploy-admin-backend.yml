@@ -49,7 +49,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          submodules: false
+          submodules: recursive
           lfs: false
 
       # ---------------------------------------------------------------
@@ -59,8 +59,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'admin backend/Admin-Backend/package-lock.json'
 
       # ---------------------------------------------------------------
       # STEP 3 — npm audit gate (FAIL on HIGH or CRITICAL)
