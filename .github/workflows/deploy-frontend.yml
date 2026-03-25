@@ -10,6 +10,7 @@ on:
     paths:
       - 'frontend/**'
       - 'infra/infra/infra-k8s/05-apps/helm/kindswap-frontend/**'
+      - '.gitmodules'
       - '.github/workflows/deploy-frontend.yml'
 
 permissions:

@@ -1,0 +1,15 @@
+[submodule "admin backend/Admin-Backend"]
+	path = admin backend/Admin-Backend
+	url = https://github.com/ksoul2/Admin-Backend.git
+[submodule "admin panel/Admin-Panel"]
+	path = admin panel/Admin-Panel
+	url = https://github.com/ksoul2/Admin-Panel.git
+[submodule "contar t kns fee/Contract-kns_fee_"]
+	path = contar t kns fee/Contract-kns_fee_
+	url = https://github.com/ksoul2/Contract-kns_fee_.git
+[submodule "kinswap fee converter/Kindswap-Fee-Converter"]
+	path = kinswap fee converter/Kindswap-Fee-Converter
+	url = https://github.com/ksoul2/Kindswap-Fee-Converter.git
+[submodule "kns staking/Kns_Staking"]
+	path = kns staking/Kns_Staking
+	url = https://github.com/ksoul2/Kns_Staking.git
