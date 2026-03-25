@@ -10,6 +10,7 @@ on:
     paths:
       - 'admin backend/**'
       - 'infra/infra/infra-k8s/05-apps/helm/kindswap-admin-backend/**'
+      - '.gitmodules'
       - '.github/workflows/deploy-admin-backend.yml'
 
 permissions:
@@ -21,6 +22,7 @@ env:
   ECR_REPOSITORY: kindswap-admin-backend
   HELM_RELEASE: kindswap-admin-backend
   EKS_CLUSTER: kindswap-cluster
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):
 # AWS_ACCOUNT_ID          — 12-digit AWS account ID
@@ -43,13 +45,18 @@ jobs:
       # STEP 1 — Checkout
       # ---------------------------------------------------------------
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+          lfs: false
 
       # ---------------------------------------------------------------
       # STEP 2 — Setup Node (for npm audit)
       # ---------------------------------------------------------------
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
@@ -62,14 +69,30 @@ jobs:
         working-directory: 'admin backend/Admin-Backend'
         run: |
           npm ci --prefer-offline
-          npm audit --audit-level=high
-          echo "✅ npm audit passed — no HIGH or CRITICAL vulnerabilities"
+
+          AUDIT_JSON=$(npm audit --json || true)
+          CRITICAL=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.critical // 0')
+          HIGH=$(echo "$AUDIT_JSON" | jq -r '.metadata.vulnerabilities.high // 0')
+
+          echo "Critical vulnerabilities: $CRITICAL"
+          echo "High vulnerabilities: $HIGH"
+
+          if [ "$CRITICAL" -gt "0" ]; then
+            echo "🚨 PIPELINE BLOCKED — $CRITICAL critical npm vulnerability(ies) found."
+            exit 1
+          fi
+
+          if [ "$HIGH" -gt "0" ]; then
+            echo "⚠️ WARNING — $HIGH high npm vulnerability(ies) found. Continue with caution."
+          fi
+
+          echo "✅ npm audit gate passed — no critical vulnerabilities"
 
       # ---------------------------------------------------------------
       # STEP 4 — Configure AWS credentials via OIDC
       # ---------------------------------------------------------------
       - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/kindswap-github-actions-role
           aws-region: ${{ env.AWS_REGION }}

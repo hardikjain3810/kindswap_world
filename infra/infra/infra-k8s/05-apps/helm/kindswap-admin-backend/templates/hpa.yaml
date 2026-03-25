@@ -1,0 +1,22 @@
+{{- if .Values.hpa.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kindswap-admin-backend.fullname" . }}
+  labels:
+    {{- include "kindswap-admin-backend.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kindswap-admin-backend.fullname" . }}
+  minReplicas: {{ .Values.replicaCount.min }}
+  maxReplicas: {{ .Values.replicaCount.max }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.hpa.targetCPUUtilizationPercentage }}
+{{- end }}

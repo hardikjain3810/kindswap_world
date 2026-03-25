@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kindswap-admin-frontend
+description: KindSwap Admin Frontend Helm Chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

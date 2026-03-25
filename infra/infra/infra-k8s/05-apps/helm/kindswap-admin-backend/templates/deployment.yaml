@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kindswap-admin-backend.fullname" . }}
+  labels:
+    {{- include "kindswap-admin-backend.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.min }}
+  selector:
+    matchLabels:
+      {{- include "kindswap-admin-backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kindswap-admin-backend.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "kindswap-admin-backend.fullname" . }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: secrets
+          mountPath: {{ .Values.secrets.mountPath }}
+          readOnly: true
+        env:
+        - name: NODE_ENV
+          value: {{ .Values.environment }}
+        - name: DB_POOL_MAX
+          value: "{{ index .Values.pgPool.max .Values.environment }}"
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_port
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_password
+        - name: DB_NAME
+          value: kindswap
+      volumes:
+      - name: secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: kindswap-backend-{{ .Values.environment }}
