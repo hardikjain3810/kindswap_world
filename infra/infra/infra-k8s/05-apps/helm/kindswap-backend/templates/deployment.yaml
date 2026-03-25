@@ -20,6 +20,10 @@ spec:
       imagePullSecrets:
         - name: ecr-secret
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+      {{- end }}
       tolerations:
         - key: CriticalAddonsOnly
           operator: Exists
