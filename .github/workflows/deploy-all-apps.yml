@@ -1,0 +1,91 @@
+name: Deploy — KindSwap All Apps
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+      - staging
+      - main
+    paths:
+      - '.github/workflows/deploy-all-apps.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: kindswap-cluster
+
+jobs:
+  deploy-backend:
+    name: Deploy backend
+    uses: ./.github/workflows/deploy-backend.yml
+    secrets: inherit
+
+  deploy-frontend:
+    name: Deploy frontend
+    needs: deploy-backend
+    uses: ./.github/workflows/deploy-frontend.yml
+    secrets: inherit
+
+  deploy-admin-backend:
+    name: Deploy admin backend
+    needs: deploy-frontend
+    uses: ./.github/workflows/deploy-admin-backend.yml
+    secrets: inherit
+
+  deploy-admin-frontend:
+    name: Deploy admin frontend
+    needs: deploy-admin-backend
+    uses: ./.github/workflows/deploy-admin-frontend.yml
+    secrets: inherit
+
+  final-health-check:
+    name: Final cluster health check
+    needs:
+      - deploy-backend
+      - deploy-frontend
+      - deploy-admin-backend
+      - deploy-admin-frontend
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/kindswap-github-actions-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set namespace
+        id: namespace
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "namespace=production" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.ref_name }}" = "staging" ]; then
+            echo "namespace=staging" >> "$GITHUB_OUTPUT"
+          else
+            echo "namespace=dev" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ env.EKS_CLUSTER }} \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Verify all deployments are ready
+        run: |
+          NS=${{ steps.namespace.outputs.namespace }}
+          echo "Checking namespace: $NS"
+
+          kubectl get deploy -n "$NS"
+          kubectl get pods -n "$NS"
+
+          kubectl rollout status deployment/kindswap-backend -n "$NS" --timeout=5m
+          kubectl rollout status deployment/kindswap-frontend -n "$NS" --timeout=5m
+          kubectl rollout status deployment/kindswap-admin-backend -n "$NS" --timeout=5m
+          kubectl rollout status deployment/kindswap-admin-frontend -n "$NS" --timeout=5m
+
+          echo "✅ Final check passed — all 4 deployments are healthy"
