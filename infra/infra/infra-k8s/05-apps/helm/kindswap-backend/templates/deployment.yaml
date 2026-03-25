@@ -35,7 +35,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 3000
+            - containerPort: 5000
               name: http
           volumeMounts:
             - name: secrets-store
@@ -60,15 +60,15 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
           livenessProbe:
             httpGet:
-              path: /health
-              port: 3000
+              path: /api/health
+              port: 5000
             initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /health
-              port: 3000
+              path: /api/health
+              port: 5000
             initialDelaySeconds: 10
             periodSeconds: 5
             failureThreshold: 2

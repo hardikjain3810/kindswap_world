@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - 'backend/**'
+      - 'infra/infra/infra-k8s/05-apps/helm/kindswap-backend/**'
       - '.github/workflows/deploy-backend.yml'
 
 permissions:
