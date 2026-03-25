@@ -15,13 +15,10 @@ spec:
         {{- include "kindswap-admin-backend.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      volumes:
-      - name: secrets
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: {{ .Values.secrets.secretProviderClass }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -32,7 +29,7 @@ spec:
           protocol: TCP
         livenessProbe:
           httpGet:
-            path: /api/health
+            path: /health
             port: http
           initialDelaySeconds: 30
           periodSeconds: 10
@@ -40,7 +37,7 @@ spec:
           failureThreshold: 3
         readinessProbe:
           httpGet:
-            path: /api/health
+            path: /health
             port: http
           initialDelaySeconds: 15
           periodSeconds: 10
@@ -48,10 +45,6 @@ spec:
           failureThreshold: 3
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
-        volumeMounts:
-        - name: secrets
-          mountPath: {{ .Values.secrets.mountPath }}
-          readOnly: true
         env:
         - name: NODE_ENV
           value: {{ .Values.environment }}
@@ -59,5 +52,23 @@ spec:
           value: "{{ index .Values.pgPool.max .Values.environment }}"
         - name: DB_NAME
           value: {{ if eq .Values.environment "production" }}"kindswap_production"{{ else }}"kindswap_staging"{{ end }}
-        - name: DB_CREDENTIALS_PATH
-          value: {{ .Values.secrets.mountPath }}/db-credentials
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_port
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_user
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: db_password
