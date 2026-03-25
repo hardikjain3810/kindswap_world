@@ -57,5 +57,7 @@ spec:
           value: {{ .Values.environment }}
         - name: DB_POOL_MAX
           value: "{{ index .Values.pgPool.max .Values.environment }}"
+        - name: DB_NAME
+          value: {{ if eq .Values.environment "production" }}"kindswap_production"{{ else }}"kindswap_staging"{{ end }}
         - name: DB_CREDENTIALS_PATH
           value: {{ .Values.secrets.mountPath }}/db-credentials
