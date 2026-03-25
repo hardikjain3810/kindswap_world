@@ -230,14 +230,10 @@ jobs:
       # ---------------------------------------------------------------
       - name: Helm upgrade
         run: |
-          # Smart-find backend chart and exclude admin charts
-          CHART_PATH=$(find . -name "Chart.yaml" | grep -i "backend" | grep -vi "admin" | head -n 1 | xargs dirname)
-
-          echo "Found Helm chart at: $CHART_PATH"
-
-          if [ -z "$CHART_PATH" ] || [ ! -f "$CHART_PATH/Chart.yaml" ]; then
-            echo "❌ Could not find the backend Helm chart!"
-            echo "Here is what I found instead:"
+          CHART_PATH="./infra/infra/infra-k8s/05-apps/helm/kindswap-backend"
+          echo "Using Helm chart path: $CHART_PATH"
+          if [ ! -f "$CHART_PATH/Chart.yaml" ]; then
+            echo "❌ Expected chart not found at $CHART_PATH"
             find . -name "Chart.yaml"
             exit 1
           fi
