@@ -256,8 +256,6 @@ jobs:
             --set image.tag=${{ steps.image-tag.outputs.tag }} \
             --set environment=${{ steps.namespace.outputs.namespace }} \
             --debug \
-            --wait \
-            --timeout 10m \
             --history-max 5
           echo "✅ Helm upgrade complete"
 
