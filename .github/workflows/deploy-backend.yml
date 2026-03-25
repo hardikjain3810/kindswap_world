@@ -287,20 +287,6 @@ jobs:
             --timeout=5m
           echo "✅ Rollout verified — all pods Running"
 
-      # ---------------------------------------------------------------
-      # STEP 17 — Rollback on failure
-      # ---------------------------------------------------------------
-      - name: Rollback on failure
-        if: failure()
-        run: |
-          echo "🔄 Deployment failed — rolling back..."
-          helm rollback ${{ env.HELM_RELEASE }} \
-            --namespace ${{ steps.namespace.outputs.namespace }} \
-            --wait \
-            --timeout 3m || true
-          helm uninstall ${{ env.HELM_RELEASE }} --namespace ${{ steps.namespace.outputs.namespace }} || true
-          echo "Rollback attempted. Check pod status manually."
-
 # Triggering Dev Chain Pull Test
 
 # Final trigger: Backend Helm chart files are now tracked
