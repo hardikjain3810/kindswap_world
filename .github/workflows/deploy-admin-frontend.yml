@@ -49,8 +49,30 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          submodules: recursive
+          submodules: false
           lfs: false
+
+      # ---------------------------------------------------------------
+      # STEP 1B — Ensure Admin Panel source is present
+      # ---------------------------------------------------------------
+      - name: Prepare Admin Panel source
+        run: |
+          APP_DIR='admin panel/Admin-Panel'
+
+          if [ -f "$APP_DIR/package.json" ]; then
+            echo "✅ Admin Panel source found in workspace"
+          else
+            echo "ℹ️ Admin Panel submodule content missing; cloning source repository..."
+            mkdir -p 'admin panel'
+            GIT_TERMINAL_PROMPT=0 git clone --depth 1 https://github.com/ksoul2/Admin-Panel.git "$APP_DIR"
+          fi
+
+          if [ ! -f "$APP_DIR/package.json" ]; then
+            echo "❌ Admin Panel source is unavailable: $APP_DIR/package.json not found"
+            exit 1
+          fi
+
+          echo "✅ Admin Panel source is ready"
 
       # ---------------------------------------------------------------
       # STEP 2 — Setup Node (for npm audit)
