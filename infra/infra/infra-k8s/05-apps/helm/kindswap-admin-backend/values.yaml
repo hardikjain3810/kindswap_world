@@ -33,5 +33,6 @@ pgPool:
     dev: 10
 
 secrets:
-  # Kubernetes Secret synchronized during deployment from AWS Secrets Manager
-  name: kindswap-backend-secrets
+  # Reuse existing CSI SecretProviderClass already used by backend
+  secretProviderClass: kindswap-secrets
+  mountPath: /mnt/secrets

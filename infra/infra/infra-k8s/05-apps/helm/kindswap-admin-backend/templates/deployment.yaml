@@ -19,6 +19,13 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+      - name: secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: {{ .Values.secrets.secretProviderClass }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -45,6 +52,10 @@ spec:
           failureThreshold: 3
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
+        volumeMounts:
+        - name: secrets
+          mountPath: {{ .Values.secrets.mountPath }}
+          readOnly: true
         env:
         - name: NODE_ENV
           value: {{ .Values.environment }}
@@ -52,23 +63,5 @@ spec:
           value: "{{ index .Values.pgPool.max .Values.environment }}"
         - name: DB_NAME
           value: {{ if eq .Values.environment "production" }}"kindswap_production"{{ else }}"kindswap_staging"{{ end }}
-        - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_host
-        - name: DB_PORT
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_port
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_user
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.secrets.name }}
-              key: db_password
+        - name: DB_CREDENTIALS_PATH
+          value: {{ .Values.secrets.mountPath }}/db-credentials

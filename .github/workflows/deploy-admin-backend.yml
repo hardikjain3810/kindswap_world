@@ -245,46 +245,6 @@ jobs:
           fi
 
       # ---------------------------------------------------------------
-      # STEP 14B — Sync DB secret to Kubernetes
-      # ---------------------------------------------------------------
-      - name: Sync DB secret to Kubernetes
-        run: |
-          NS=${{ steps.namespace.outputs.namespace }}
-          if [ "$NS" = "production" ]; then
-            DB_SECRET_ID="kindswap/db/prod/credentials"
-          elif [ "$NS" = "staging" ]; then
-            DB_SECRET_ID="kindswap/db/staging/credentials"
-          else
-            DB_SECRET_ID="kindswap/db/dev/credentials"
-          fi
-
-          SECRET_JSON=$(aws secretsmanager get-secret-value \
-            --secret-id "$DB_SECRET_ID" \
-            --query SecretString \
-            --output text)
-
-          DB_HOST=$(echo "$SECRET_JSON" | jq -r '.host // .db_host // .hostname // empty')
-          DB_PORT=$(echo "$SECRET_JSON" | jq -r '(.port // .db_port // 5432) | tostring')
-          DB_USER=$(echo "$SECRET_JSON" | jq -r '.username // .user // .db_user // empty')
-          DB_PASSWORD=$(echo "$SECRET_JSON" | jq -r '.password // .db_password // empty')
-
-          if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASSWORD" ]; then
-            echo "❌ Missing required DB fields in AWS secret: $DB_SECRET_ID"
-            echo "$SECRET_JSON" | jq '.'
-            exit 1
-          fi
-
-          kubectl create secret generic kindswap-backend-secrets \
-            --namespace "$NS" \
-            --from-literal=db_host="$DB_HOST" \
-            --from-literal=db_port="$DB_PORT" \
-            --from-literal=db_user="$DB_USER" \
-            --from-literal=db_password="$DB_PASSWORD" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          echo "✅ Kubernetes DB secret synced in namespace: $NS"
-
-      # ---------------------------------------------------------------
       # STEP 15 — Helm upgrade (atomic — auto-rollback on failure)
       # ---------------------------------------------------------------
       - name: Helm upgrade
