@@ -21,6 +21,7 @@ env:
   ECR_REPOSITORY: kindswap-frontend
   HELM_RELEASE: kindswap-frontend
   EKS_CLUSTER: kindswap-cluster
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 # Required GitHub Secrets (Settings → Secrets and variables → Actions):
 # AWS_ACCOUNT_ID          — 12-digit AWS account ID
@@ -43,13 +44,18 @@ jobs:
       # STEP 1 — Checkout
       # ---------------------------------------------------------------
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+          lfs: false
 
       # ---------------------------------------------------------------
       # STEP 2 — Setup Node (for npm audit)
       # ---------------------------------------------------------------
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
