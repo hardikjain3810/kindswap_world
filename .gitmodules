@@ -1,6 +1,3 @@
-[submodule "admin backend/Admin-Backend"]
-	path = admin backend/Admin-Backend
-	url = https://github.com/ksoul2/Admin-Backend.git
 [submodule "admin panel/Admin-Panel"]
 	path = admin panel/Admin-Panel
 	url = https://github.com/ksoul2/Admin-Panel.git
