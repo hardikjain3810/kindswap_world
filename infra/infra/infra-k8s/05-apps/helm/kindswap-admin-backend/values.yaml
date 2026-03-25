@@ -22,6 +22,10 @@ hpa:
 
 environment: dev
 
+serviceAccount:
+  # Reuse backend IRSA-enabled service account until a dedicated admin backend IRSA role is provisioned.
+  name: kindswap-backend
+
 pgPool:
   max:
     production: 40

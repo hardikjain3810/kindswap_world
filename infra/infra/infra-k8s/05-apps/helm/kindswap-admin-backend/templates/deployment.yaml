@@ -14,7 +14,7 @@ spec:
       labels:
         {{- include "kindswap-admin-backend.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "kindswap-admin-backend.fullname" . }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
