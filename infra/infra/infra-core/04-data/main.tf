@@ -159,7 +159,7 @@ resource "aws_db_instance" "nonprod" {
 
   # Storage
   allocated_storage = 20
-  storage_type      = "gp2"
+  storage_type      = "gp3"
   storage_encrypted = true
   kms_key_id        = data.terraform_remote_state.security.outputs.kms_key_arn
 

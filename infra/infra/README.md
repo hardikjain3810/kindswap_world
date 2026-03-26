@@ -310,7 +310,7 @@ terraform init && terraform apply
 ```
 
 Creates:
-- kube-prometheus-stack (Prometheus 15d retention + 20Gi gp2 storage, Grafana 5Gi gp2 storage, Alertmanager 2Gi gp2 storage)
+- kube-prometheus-stack (Prometheus 15d retention + 20Gi gp3 storage, Grafana 10Gi gp3 storage, Alertmanager 2Gi gp3 storage)
 - Grafana ALB ingress at `grafana.kindswap.world`
 - Grafana admin password in Secrets Manager (`kind_swap_grafana_password`)
 
