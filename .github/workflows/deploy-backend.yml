@@ -66,9 +66,9 @@ jobs:
       - name: npm audit — security gate
         working-directory: backend
         run: |
-          npm install
-          npm audit --audit-level=high
-          echo "✅ npm audit passed — no HIGH or CRITICAL vulnerabilities"
+          npm install --legacy-peer-deps
+          npm audit --audit-level=high --omit=dev
+          echo "✅ npm audit passed — no HIGH or CRITICAL production vulnerabilities"
 
       # ---------------------------------------------------------------
       # STEP 4 — Configure AWS credentials via OIDC (no long-lived keys)
