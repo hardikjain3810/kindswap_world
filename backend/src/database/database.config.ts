@@ -10,6 +10,7 @@ import { ContributionSubmission } from './entities/contribution-submission.entit
 import { KnsAwardHistory } from './entities/kns-award-history.entity';
 import { Admin } from './entities/admin.entity';
 import * as fs from 'fs';
+import * as path from 'path';
 
 type DbOverrides = {
   host?: string;
@@ -86,7 +87,8 @@ export const getDatabaseConfig = (): TypeOrmModuleOptions => {
     logging: !isProduction,
 
     // Enable migrations for production (run automatically on app start)
-    migrations: ['dist/database/migrations/*.js'], // Use compiled JS files in production
+    // Use absolute path to migrations directory for reliable discovery in Docker
+    migrations: [path.join(__dirname, '../database/migrations/*.js')], 
     migrationsRun: isProduction, // Auto-run migrations in production only
 
     ssl: isRemoteDb ? { rejectUnauthorized: false } : false,
