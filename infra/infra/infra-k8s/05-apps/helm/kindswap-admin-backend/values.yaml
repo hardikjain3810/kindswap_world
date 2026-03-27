@@ -22,11 +22,6 @@ hpa:
 
 environment: dev
 
-# Run admin backend on core nodes (same nodegroup as healthy backend)
-# to avoid CSI/IRSA mount instability seen on spot app nodes.
-nodeSelector:
-  node-type: core
-
 serviceAccount:
   # Reuse backend IRSA-enabled service account until a dedicated admin backend IRSA role is provisioned.
   name: kindswap-backend

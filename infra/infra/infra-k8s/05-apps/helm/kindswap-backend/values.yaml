@@ -21,9 +21,6 @@ serviceAccount:
   name: kindswap-backend
   annotations: {}
 
-nodeSelector:
-  node-type: core
-
 ingress:
   enabled: true
   host: kindswap.world
