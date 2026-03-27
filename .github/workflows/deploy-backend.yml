@@ -8,6 +8,7 @@ on:
       - dev
       - staging
       - main
+      - prod
       - 'feature/*'
     paths:
       - 'backend/**'
@@ -43,7 +44,7 @@ jobs:
   deploy:
     name: Build & Deploy Backend
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
+    environment: ${{ (github.ref_name == 'main' || github.ref_name == 'prod') && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
 
     steps:
       # ---------------------------------------------------------------

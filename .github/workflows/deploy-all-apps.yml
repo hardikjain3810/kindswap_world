@@ -7,6 +7,7 @@ on:
       - dev
       - staging
       - main
+      - prod
     paths:
       - '.github/workflows/deploy-all-apps.yml'
 
@@ -50,7 +51,7 @@ jobs:
       - deploy-admin-backend
       - deploy-admin-frontend
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
+    environment: ${{ (github.ref_name == 'main' || github.ref_name == 'prod') && 'production' || github.ref_name == 'staging' && 'staging' || 'dev' }}
     steps:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v5
