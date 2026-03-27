@@ -87,8 +87,8 @@ export const getDatabaseConfig = (): TypeOrmModuleOptions => {
     logging: !isProduction,
 
     // Enable migrations for production (run automatically on app start)
-    // Use absolute path to migrations directory for reliable discovery in Docker
-    migrations: [path.join(__dirname, '../database/migrations/*.js')], 
+    // Use absolute path with glob pattern for reliable discovery in Docker
+    migrations: [path.join(__dirname, '../database/migrations/*{.ts,.js}')], 
     migrationsRun: isProduction, // Auto-run migrations in production only
 
     ssl: isRemoteDb ? { rejectUnauthorized: false } : false,
