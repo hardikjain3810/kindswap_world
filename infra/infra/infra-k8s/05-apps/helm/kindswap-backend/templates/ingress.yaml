@@ -9,6 +9,9 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-redirect: "443"
+    {{- if .Values.ingress.certArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certArn }}
+    {{- end }}
     {{- if .Values.ingress.vpnCidr }}
     alb.ingress.kubernetes.io/inbound-cidrs: {{ .Values.ingress.vpnCidr }}
     {{- end }}

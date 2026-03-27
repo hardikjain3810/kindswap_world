@@ -28,6 +28,7 @@ ingress:
   host: kindswap.world
   scheme: internet-facing
   vpnCidr: ""
+  certArn: arn:aws:acm:us-east-1:916994818641:certificate/f39e16e4-6479-4f02-8999-f600a495736c
 
 hpa:
   targetCPUPercent: 70

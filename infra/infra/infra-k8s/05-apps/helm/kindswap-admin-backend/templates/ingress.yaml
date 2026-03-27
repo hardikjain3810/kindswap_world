@@ -5,13 +5,20 @@ metadata:
   labels:
     {{- include "kindswap-admin-backend.labels" . | nindent 4 }}
   annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.scheme }}
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.connection.keep_alive.enabled=true
+    {{- if .Values.ingress.certArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certArn }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    {{- else }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    {{- end }}
 spec:
   ingressClassName: alb
   rules:
-  - host: "admin-api.{{ .Values.environment }}.kindswap.world"
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /

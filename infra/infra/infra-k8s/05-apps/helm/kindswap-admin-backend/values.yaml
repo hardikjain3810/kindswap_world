@@ -28,6 +28,12 @@ serviceAccount:
   name: kindswap-backend
   annotations: {}
 
+ingress:
+  enabled: true
+  host: admin-api.production.kindswap.world
+  scheme: internet-facing
+  certArn: arn:aws:acm:us-east-1:916994818641:certificate/f39e16e4-6479-4f02-8999-f600a495736c
+
 pgPool:
   max:
     production: 40
