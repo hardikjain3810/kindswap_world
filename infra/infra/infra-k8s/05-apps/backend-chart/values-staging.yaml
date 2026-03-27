@@ -1,0 +1,48 @@
+image:
+  repository: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/kind_swap_backend
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: alb
+  certificateArn: ""
+  listenPorts: '[{"HTTPS":443},{"HTTP":80}]'
+  cognitoIdpJson: ""
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "15"
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "5"
+    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+    alb.ingress.kubernetes.io/auth-type: cognito
+    alb.ingress.kubernetes.io/auth-on-unauthenticated-request: authenticate
+    alb.ingress.kubernetes.io/auth-scope: "openid email profile"
+    alb.ingress.kubernetes.io/auth-session-cookie: AWSELBAuthSessionCookie
+    alb.ingress.kubernetes.io/auth-session-timeout: "3600"
+    # Restrict access to VPN CIDR (replace with your VPN CIDR range)
+    alb.ingress.kubernetes.io/inbound-cidrs: "10.0.100.0/24"
+  hosts:
+    - host: api.stg.kindswap.world
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 150m
+    memory: 192Mi
+  limits:
+    cpu: 300m
+    memory: 384Mi
+
+autoscaling:
+  enabled: false
+
+env:
+  NODE_ENV: staging
+  PORT: "3000"

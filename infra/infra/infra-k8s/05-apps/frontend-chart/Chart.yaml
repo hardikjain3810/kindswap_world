@@ -1,0 +1,16 @@
+apiVersion: v2
+name: kind-swap-frontend
+description: |
+  Helm chart packaging for the kind_swap frontend deployment pipeline.
+  NOTE: The actual infrastructure (S3 + CloudFront) is provisioned by Terraform
+  in infra/infra-k8s/05-apps/frontend/. This chart is used only as a
+  deployment descriptor for CI/CD tooling that expects a Helm chart interface.
+type: application
+version: 0.1.0
+appVersion: "1.0"
+keywords:
+  - kind_swap
+  - frontend
+  - static-site
+maintainers:
+  - name: kind_swap team

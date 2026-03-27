@@ -1,0 +1,1745 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.7",
+  "serial": 20,
+  "lineage": "f190156b-eaf2-ad1c-368f-8d797545f203",
+  "outputs": {
+    "cluster_certificate_authority_data": {
+      "value": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJV0l5YkkvcHRST013RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBek1qRXhPRFUzTUROYUZ3MHpOakF6TVRneE9UQXlNRE5hTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUM3eTZxQ25NSkdtaTE3OGw4OFc0Qm83L1FIUlZna2oyd095Z2t4ZDEwNlF2WHFDRVFmbEg2YmJWNHYKM09VS0tFQXVneXRXOGxUVUpDTHIwMklYT3d5c3V0aWM1ZjJ1RW9xUnQrU0hwaDdSdENidTUwTGd2WDY2NzN6NApkWXR6T0FhOWFnaVJKb2ZBY1VZYjcxM1p0cFlTZEpNMXFVRlB2UlBpMlVoL0pBYlNUOXFaNWgwU3BvZ0NnNVdTCjJGZUNtR1RQTCs2TGpOZTdWaEpGeWZPRmY3NlJiZS94T3ZLS1ljOFY5ZGJvaTNjTDlRQ3EzQm10Tm01SzlhZGMKSVozc3pXcEE4d3EvdUVOUlJIbUhMdERpblZrWm83cXgxeTB2SFphWHY1UHVLZzNhZWRsK0hrSHdOeWllUEM4TQpBQSthdW0vODlVTjJVU2t2bGhHQjBxVXNVN0puQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSQUVDQ1RacVc3V2pLTHFET1c1R00yNjhqZlN6QVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQlpUR2FLaDJ3awpWeVRHci9yQWZLVTNmSzlIajZYeG51NVVtV1M3ODArOCtQY2dheVh5eUdoVHczam12K0lXUVlYc1FENDhzZXAxCmtPd3RZeVNXanFJRlVUOFB1NFhoYzV3Q3ZRQy92dmZMZ2NITmZXVFA3c2krZnVOaFc4a2NvaFpJTUswekZWWmYKQ0ptS2VodmVzenlqN0liME41SlppNEFYa2VNRmZ5VVZYMWNrRTF5QjE5WkNBd2ZaRTdlZHh5SnRKTTh0eWZmbQpnWm9aN2dDNnRLTHc3VGdQRS9PUUtzY0N4MktTUW9adTdrU05oeW9NbEdGVWxybjlvZ3BCZjA3aGtmMHI5c3V6Ci8vRFA5WVJFaGIyNElkVXN6REFvWXVaenRpN3UrOHFnTlhwbmZsUUR1M0ZSaEpoSG5LclFROHd6YWhyTHYzd0QKWnpsT1oxeFZqRElECi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+      "type": "string",
+      "sensitive": true
+    },
+    "cluster_endpoint": {
+      "value": "https://4145AF234281488EDD0867A3236FDAF7.gr7.us-east-1.eks.amazonaws.com",
+      "type": "string"
+    },
+    "cluster_id": {
+      "value": "kindswap-cluster",
+      "type": "string"
+    },
+    "cluster_name": {
+      "value": "kindswap-cluster",
+      "type": "string"
+    },
+    "cluster_oidc_issuer_url": {
+      "value": "https://oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+      "type": "string"
+    },
+    "cluster_version": {
+      "value": "1.31",
+      "type": "string"
+    },
+    "core_node_group_name": {
+      "value": "kindswap-core-nodes",
+      "type": "string"
+    },
+    "core_node_group_status": {
+      "value": "DELETING",
+      "type": "string"
+    },
+    "eks_cluster_log_group_name": {
+      "value": "/aws/eks/kindswap-cluster/cluster",
+      "type": "string"
+    },
+    "karpenter_controller_role_arn": {
+      "value": "arn:aws:iam::916994818641:role/kindswap-karpenter-controller",
+      "type": "string"
+    },
+    "karpenter_controller_role_name": {
+      "value": "kindswap-karpenter-controller",
+      "type": "string"
+    },
+    "karpenter_interruption_queue_arn": {
+      "value": "arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption",
+      "type": "string"
+    },
+    "karpenter_interruption_queue_name": {
+      "value": "kindswap-karpenter-interruption",
+      "type": "string"
+    },
+    "karpenter_node_instance_profile_name": {
+      "value": "kind_swap_karpenter_node_profile",
+      "type": "string"
+    },
+    "karpenter_node_role_arn": {
+      "value": "arn:aws:iam::916994818641:role/kind_swap_karpenter_node_role",
+      "type": "string"
+    },
+    "karpenter_node_role_name": {
+      "value": "kind_swap_karpenter_node_role",
+      "type": "string"
+    },
+    "oidc_provider_arn": {
+      "value": "arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+      "type": "string"
+    },
+    "oidc_provider_url": {
+      "value": "oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "aws_caller_identity",
+      "name": "current",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "account_id": "916994818641",
+            "arn": "arn:aws:iam::916994818641:user/raghav_rock",
+            "id": "916994818641",
+            "user_id": "AIDA5LAJGQJIY4WBSVFVV"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_iam_policy_document",
+      "name": "karpenter_controller_assume_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "1428583193",
+            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7\"\n      },\n      \"Condition\": {\n        \"StringEquals\": {\n          \"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:aud\": \"sts.amazonaws.com\",\n          \"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:sub\": \"system:serviceaccount:karpenter:karpenter\"\n        }\n      }\n    }\n  ]\n}",
+            "minified_json": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Principal\":{\"Federated\":\"arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7\"},\"Condition\":{\"StringEquals\":{\"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:aud\":\"sts.amazonaws.com\",\"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:sub\":\"system:serviceaccount:karpenter:karpenter\"}}}]}",
+            "override_json": null,
+            "override_policy_documents": null,
+            "policy_id": null,
+            "source_json": null,
+            "source_policy_documents": null,
+            "statement": [
+              {
+                "actions": [
+                  "sts:AssumeRoleWithWebIdentity"
+                ],
+                "condition": [
+                  {
+                    "test": "StringEquals",
+                    "values": [
+                      "sts.amazonaws.com"
+                    ],
+                    "variable": "oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:aud"
+                  },
+                  {
+                    "test": "StringEquals",
+                    "values": [
+                      "system:serviceaccount:karpenter:karpenter"
+                    ],
+                    "variable": "oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:sub"
+                  }
+                ],
+                "effect": "Allow",
+                "not_actions": [],
+                "not_principals": [],
+                "not_resources": [],
+                "principals": [
+                  {
+                    "identifiers": [
+                      "arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7"
+                    ],
+                    "type": "Federated"
+                  }
+                ],
+                "resources": [],
+                "sid": ""
+              }
+            ],
+            "version": "2012-10-17"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_region",
+      "name": "current",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "description": "US East (N. Virginia)",
+            "endpoint": "ec2.us-east-1.amazonaws.com",
+            "id": "us-east-1",
+            "name": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "terraform_remote_state",
+      "name": "networking",
+      "provider": "provider[\"terraform.io/builtin/terraform\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "backend": "s3",
+            "config": {
+              "value": {
+                "bucket": "kindswap-terraform-state",
+                "key": "core/networking/terraform.tfstate",
+                "region": "us-east-1"
+              },
+              "type": [
+                "object",
+                {
+                  "bucket": "string",
+                  "key": "string",
+                  "region": "string"
+                }
+              ]
+            },
+            "defaults": null,
+            "outputs": {
+              "value": {
+                "all_private_subnet_ids": [
+                  "subnet-024da76e845378ea4",
+                  "subnet-08df955464b06a7b4",
+                  "subnet-00ce83f3c182c42e8",
+                  "subnet-0b6731d2fb8e42f00"
+                ],
+                "flow_logs_log_group_name": "/aws/vpc/kindswap-flow-logs",
+                "igw_id": "igw-05d0750b7a80a1670",
+                "nat_eip_id": "eipalloc-020b330bb116f5e1e",
+                "nat_eip_public_ip": "98.87.251.93",
+                "nat_instance_id": "i-08b63f43f54858b2c",
+                "nat_instance_primary_eni_id": "eni-075d73535b7912c10",
+                "nat_temp_sg_id": "sg-02758085176211971",
+                "private_app_subnet_1_id": "subnet-024da76e845378ea4",
+                "private_app_subnet_2_id": "subnet-08df955464b06a7b4",
+                "private_app_subnet_ids": [
+                  "subnet-024da76e845378ea4",
+                  "subnet-08df955464b06a7b4"
+                ],
+                "private_data_subnet_1_id": "subnet-00ce83f3c182c42e8",
+                "private_data_subnet_2_id": "subnet-0b6731d2fb8e42f00",
+                "private_data_subnet_ids": [
+                  "subnet-00ce83f3c182c42e8",
+                  "subnet-0b6731d2fb8e42f00"
+                ],
+                "private_rt_id": "rtb-0f77beab898648c16",
+                "public_rt_id": "rtb-0e75264a02f6bc924",
+                "public_subnet_1_id": "subnet-03b734e1426e6fcfa",
+                "public_subnet_2_id": "subnet-029bb34e2bde6a7e4",
+                "public_subnet_ids": [
+                  "subnet-03b734e1426e6fcfa",
+                  "subnet-029bb34e2bde6a7e4"
+                ],
+                "vpc_cidr": "10.0.0.0/16",
+                "vpc_id": "vpc-043b017aea0ecaf2d"
+              },
+              "type": [
+                "object",
+                {
+                  "all_private_subnet_ids": [
+                    "tuple",
+                    [
+                      "string",
+                      "string",
+                      "string",
+                      "string"
+                    ]
+                  ],
+                  "flow_logs_log_group_name": "string",
+                  "igw_id": "string",
+                  "nat_eip_id": "string",
+                  "nat_eip_public_ip": "string",
+                  "nat_instance_id": "string",
+                  "nat_instance_primary_eni_id": "string",
+                  "nat_temp_sg_id": "string",
+                  "private_app_subnet_1_id": "string",
+                  "private_app_subnet_2_id": "string",
+                  "private_app_subnet_ids": [
+                    "tuple",
+                    [
+                      "string",
+                      "string"
+                    ]
+                  ],
+                  "private_data_subnet_1_id": "string",
+                  "private_data_subnet_2_id": "string",
+                  "private_data_subnet_ids": [
+                    "tuple",
+                    [
+                      "string",
+                      "string"
+                    ]
+                  ],
+                  "private_rt_id": "string",
+                  "public_rt_id": "string",
+                  "public_subnet_1_id": "string",
+                  "public_subnet_2_id": "string",
+                  "public_subnet_ids": [
+                    "tuple",
+                    [
+                      "string",
+                      "string"
+                    ]
+                  ],
+                  "vpc_cidr": "string",
+                  "vpc_id": "string"
+                }
+              ]
+            },
+            "workspace": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "terraform_remote_state",
+      "name": "security",
+      "provider": "provider[\"terraform.io/builtin/terraform\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "backend": "s3",
+            "config": {
+              "value": {
+                "bucket": "kindswap-terraform-state",
+                "key": "core/security/terraform.tfstate",
+                "region": "us-east-1"
+              },
+              "type": [
+                "object",
+                {
+                  "bucket": "string",
+                  "key": "string",
+                  "region": "string"
+                }
+              ]
+            },
+            "defaults": null,
+            "outputs": {
+              "value": {
+                "alb_sg_id": "sg-02f04c13cda2fbd16",
+                "eks_cluster_role_arn": "arn:aws:iam::916994818641:role/kindswap-eks-cluster-role",
+                "eks_cluster_sg_id": "sg-02ad44b964321c281",
+                "eks_node_role_arn": "arn:aws:iam::916994818641:role/kindswap-eks-node-role",
+                "eks_node_role_name": "kindswap-eks-node-role",
+                "eks_node_sg_id": "sg-026ad215f435570c8",
+                "github_actions_role_arn": "arn:aws:iam::916994818641:role/kindswap-github-actions-role",
+                "github_oidc_provider_arn": "arn:aws:iam::916994818641:oidc-provider/token.actions.githubusercontent.com",
+                "kms_alias_arn": "arn:aws:kms:us-east-1:916994818641:alias/kindswap-master",
+                "kms_key_arn": "arn:aws:kms:us-east-1:916994818641:key/6cc1df59-c085-45df-a7c0-438c3047455d",
+                "kms_key_id": "6cc1df59-c085-45df-a7c0-438c3047455d",
+                "mfa_enforcement_policy_arn": "arn:aws:iam::916994818641:policy/kindswap-mfa-enforcement",
+                "nat_sg_id": "sg-09f48f8da90e01264",
+                "rds_sg_id": "sg-0932d327cdd19794f",
+                "secrets_rotation_lambda_role_arn": "arn:aws:iam::916994818641:role/kindswap-secrets-rotation-role",
+                "vpn_sg_id": "sg-01f8b12c651f1517e"
+              },
+              "type": [
+                "object",
+                {
+                  "alb_sg_id": "string",
+                  "eks_cluster_role_arn": "string",
+                  "eks_cluster_sg_id": "string",
+                  "eks_node_role_arn": "string",
+                  "eks_node_role_name": "string",
+                  "eks_node_sg_id": "string",
+                  "github_actions_role_arn": "string",
+                  "github_oidc_provider_arn": "string",
+                  "kms_alias_arn": "string",
+                  "kms_key_arn": "string",
+                  "kms_key_id": "string",
+                  "mfa_enforcement_policy_arn": "string",
+                  "nat_sg_id": "string",
+                  "rds_sg_id": "string",
+                  "secrets_rotation_lambda_role_arn": "string",
+                  "vpn_sg_id": "string"
+                }
+              ]
+            },
+            "workspace": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "tls_certificate",
+      "name": "eks_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/tls\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "certificates": [
+              {
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIEkjCCA3qgAwIBAgITBn+USionzfP6wq4rAfkI7rnExjANBgkqhkiG9w0BAQsF\nADCBmDELMAkGA1UEBhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNj\nb3R0c2RhbGUxJTAjBgNVBAoTHFN0YXJmaWVsZCBUZWNobm9sb2dpZXMsIEluYy4x\nOzA5BgNVBAMTMlN0YXJmaWVsZCBTZXJ2aWNlcyBSb290IENlcnRpZmljYXRlIEF1\ndGhvcml0eSAtIEcyMB4XDTE1MDUyNTEyMDAwMFoXDTM3MTIzMTAxMDAwMFowOTEL\nMAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEZMBcGA1UEAxMQQW1hem9uIFJv\nb3QgQ0EgMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALJ4gHHKeNXj\nca9HgFB0fW7Y14h29Jlo91ghYPl0hAEvrAIthtOgQ3pOsqTQNroBvo3bSMgHFzZM\n9O6II8c+6zf1tRn4SWiw3te5djgdYZ6k/oI2peVKVuRF4fn9tBb6dNqcmzU5L/qw\nIFAGbHrQgLKm+a/sRxmPUDgH3KKHOVj4utWp+UhnMJbulHheb4mjUcAwhmahRWa6\nVOujw5H5SNz/0egwLX0tdHA114gk957EWW67c4cX8jJGKLhD+rcdqsq08p8kDi1L\n93FcXmn/6pUCyziKrlA4b9v7LWIbxcceVOF34GfID5yHI9Y/QCB/IIDEgEw+OyQm\njgSubJrIqg0CAwEAAaOCATEwggEtMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/\nBAQDAgGGMB0GA1UdDgQWBBSEGMyFNOy8DJSULghZnMeyEE4KCDAfBgNVHSMEGDAW\ngBScXwDfqgHXMCs4iKK4bUqc8hGRgzB4BggrBgEFBQcBAQRsMGowLgYIKwYBBQUH\nMAGGImh0dHA6Ly9vY3NwLnJvb3RnMi5hbWF6b250cnVzdC5jb20wOAYIKwYBBQUH\nMAKGLGh0dHA6Ly9jcnQucm9vdGcyLmFtYXpvbnRydXN0LmNvbS9yb290ZzIuY2Vy\nMD0GA1UdHwQ2MDQwMqAwoC6GLGh0dHA6Ly9jcmwucm9vdGcyLmFtYXpvbnRydXN0\nLmNvbS9yb290ZzIuY3JsMBEGA1UdIAQKMAgwBgYEVR0gADANBgkqhkiG9w0BAQsF\nAAOCAQEAYjdCXLwQtT6LLOkMm2xF4gcAevnFWAu5CIw+7bMlPLVvUOTNNWqnkzSW\nMiGpSESrnO09tKpzbeR/FoCJbM8oAxiDR3mjEH4wW6w7sGDgd9QIpuEdfF7Au/ma\neyKdpwAJfqxGF4PcnCZXmTA5YpaP7dreqsXMGz7KQ2hsVxa81Q4gLv7/wmpdLqBK\nbRRYh5TmOTFffHPLkIhqhBGWJ6bt2YFGpn6jcgAKUj6DiAdjd4lpFw85hdKrCEVN\n0FE6/V1dN2RMfjCyVSRCnTawXZwXgWHxyvkQAiSr6w10kY17RSlQOYiypok1JR4U\nakcjMS9cmvqtmg5iUaQqqcT5NJ0hGA==\n-----END CERTIFICATE-----\n",
+                "is_ca": true,
+                "issuer": "CN=Starfield Services Root Certificate Authority - G2,O=Starfield Technologies\\, Inc.,L=Scottsdale,ST=Arizona,C=US",
+                "max_path_length": -1,
+                "not_after": "2037-12-31T01:00:00Z",
+                "not_before": "2015-05-25T12:00:00Z",
+                "public_key_algorithm": "RSA",
+                "serial_number": "144918191876577076464031512351042010504348870",
+                "sha1_fingerprint": "06b25927c42a721631c1efd9431e648fa62e1e39",
+                "signature_algorithm": "SHA256-RSA",
+                "subject": "CN=Amazon Root CA 1,O=Amazon,C=US",
+                "version": 3
+              },
+              {
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIEXjCCA0agAwIBAgITB3MSOAudZoijOx7Zv5zNpo4ODzANBgkqhkiG9w0BAQsF\nADA5MQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRkwFwYDVQQDExBBbWF6\nb24gUm9vdCBDQSAxMB4XDTIyMDgyMzIyMjEyOFoXDTMwMDgyMzIyMjEyOFowPDEL\nMAkGA1UEBhMCVVMxDzANBgNVBAoTBkFtYXpvbjEcMBoGA1UEAxMTQW1hem9uIFJT\nQSAyMDQ4IE0wMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOtxLKnL\nH4gokjIwr4pXD3i3NyWVVYesZ1yX0yLI2qIUZ2t88Gfa4gMqs1YSXca1R/lnCKeT\nepWSGA+0+fkQNpp/L4C2T7oTTsddUx7g3ZYzByDTlrwS5HRQQqEFE3O1T5tEJP4t\nf+28IoXsNiEzl3UGzicYgtzj2cWCB41eJgEmJmcf2T8TzzK6a614ZPyq/w4CPAff\nnAV4coz96nW3AyiE2uhuB4zQUIXvgVSycW7sbWLvj5TDXunEpNCRwC4kkZjK7rol\njtT2cbb7W2s4Bkg3R42G3PLqBvt2N32e/0JOTViCk8/iccJ4sXqrS1uUN4iB5Nmv\nJK74csVl+0u0UecCAwEAAaOCAVowggFWMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYD\nVR0PAQH/BAQDAgGGMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNV\nHQ4EFgQUgbgOY4qJEhjl+js7UJWf5uWQE4UwHwYDVR0jBBgwFoAUhBjMhTTsvAyU\nlC4IWZzHshBOCggwewYIKwYBBQUHAQEEbzBtMC8GCCsGAQUFBzABhiNodHRwOi8v\nb2NzcC5yb290Y2ExLmFtYXpvbnRydXN0LmNvbTA6BggrBgEFBQcwAoYuaHR0cDov\nL2NydC5yb290Y2ExLmFtYXpvbnRydXN0LmNvbS9yb290Y2ExLmNlcjA/BgNVHR8E\nODA2MDSgMqAwhi5odHRwOi8vY3JsLnJvb3RjYTEuYW1hem9udHJ1c3QuY29tL3Jv\nb3RjYTEuY3JsMBMGA1UdIAQMMAowCAYGZ4EMAQIBMA0GCSqGSIb3DQEBCwUAA4IB\nAQCtAN4CBSMuBjJitGuxlBbkEUDeK/pZwTXv4KqPK0G50fOHOQAd8j21p0cMBgbG\nkfMHVwLU7b0XwZCav0h1ogdPMN1KakK1DT0VwA/+hFvGPJnMV1Kx2G4S1ZaSk0uU\n5QfoiYIIano01J5k4T2HapKQmmOhS/iPtuo00wW+IMLeBuKMn3OLn005hcrOGTad\nhcmeyfhQP7Z+iKHvyoQGi1C0ClymHETx/chhQGDyYSWqB/THwnN15AwLQo0E5V9E\nSJlbe4mBlqeInUsNYugExNf+tOiybcrswBy8OFsd34XOW3rjSUtsuafd9AWySa3h\nxRRrwszrzX/WWGm6wyB+f7C4\n-----END CERTIFICATE-----\n",
+                "is_ca": true,
+                "issuer": "CN=Amazon Root CA 1,O=Amazon,C=US",
+                "max_path_length": 0,
+                "not_after": "2030-08-23T22:21:28Z",
+                "not_before": "2022-08-23T22:21:28Z",
+                "public_key_algorithm": "RSA",
+                "serial_number": "166129328851546858514271303855646110030630415",
+                "sha1_fingerprint": "2ad974a775f73cbdbbd8f5ac3a49255fa8fb1f8c",
+                "signature_algorithm": "SHA256-RSA",
+                "subject": "CN=Amazon RSA 2048 M01,O=Amazon,C=US",
+                "version": 3
+              },
+              {
+                "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIF3DCCBMSgAwIBAgIQDWSUrLO5Y9qkm2y4CpQ/CTANBgkqhkiG9w0BAQsFADA8\nMQswCQYDVQQGEwJVUzEPMA0GA1UEChMGQW1hem9uMRwwGgYDVQQDExNBbWF6b24g\nUlNBIDIwNDggTTAxMB4XDTI2MDEyNzAwMDAwMFoXDTI3MDIyNTIzNTk1OVowKDEm\nMCQGA1UEAwwdKi5la3MudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDjfWC3ScmP3Yt3ENQgpvZzbXg3ZqdR+F5k\n/SIXqF2RRdrDIu3B0CivVPkNbZxS4dUjum7WHRV3+cjhne679pLBzKp/aCqycyVr\nqiGvPsCOywSNgCQ7KGZ7fR9L0o4eQ5vsotNTjF1HDkoVGdjDt8qjFedVngnnLZ2f\n9E/tACJHoCXLbg1BLI/0xXQKZqLiLGUgcLhnZjYn6AW8QgXgGyJMwHo6n13wf8uY\n3RAaOWMsTglOfMrPMKclQBwh4OaWzHD3SLXnjAvdtuErZGWSz01pRY89FfxZWtSf\nxGG+ERvHMAoM2lIbV74Bs0B+qVVAxP658rpMbPevtRrlj+fYkFzvAgMBAAGjggLs\nMIIC6DAfBgNVHSMEGDAWgBSBuA5jiokSGOX6OztQlZ/m5ZAThTAdBgNVHQ4EFgQU\npzXKZp4CIP0/n8bNGf3YAZVaFtIwKAYDVR0RBCEwH4IdKi5la3MudXMtZWFzdC0x\nLmFtYXpvbmF3cy5jb20wEwYDVR0gBAwwCjAIBgZngQwBAgEwDgYDVR0PAQH/BAQD\nAgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMDsGA1UdHwQ0MDIwMKAuoCyGKmh0dHA6\nLy9jcmwucjJtMDEuYW1hem9udHJ1c3QuY29tL3IybTAxLmNybDB1BggrBgEFBQcB\nAQRpMGcwLQYIKwYBBQUHMAGGIWh0dHA6Ly9vY3NwLnIybTAxLmFtYXpvbnRydXN0\nLmNvbTA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5yMm0wMS5hbWF6b250cnVzdC5j\nb20vcjJtMDEuY2VyMAwGA1UdEwEB/wQCMAAwggF+BgorBgEEAdZ5AgQCBIIBbgSC\nAWoBaAB1AExj3JjlnB2riPYeij3ero+rRKM3e1+blMP7oZz8wb4mAAABm/3p2vcA\nAAQDAEYwRAIgOCwhiOx8FXqVNu1L+Mv2q8pJCKzIqLFwCE6VAugMkb0CIBu7W9o8\nRWfC1A9XjVWFxJ0uIquBPcEycQMNc8pRKAJFAHcAHJ9oLOn68EVpUPgbloqH3dsy\nENhM5siy44JSSsTPWZ8AAAGb/ena3wAABAMASDBGAiEAjAu69L5N17FqPfmXSt1v\ngM+df4yz50M/fb2LDfmx+xECIQC3B3aoHVNsjqYMmqwQgR4ViKIREwNzCYKBm+W0\nGnlwnwB2AGBMmq96f3dfAdQG/JINyJnrCxx9+MlSG/r6F3c7l4vJAAABm/3p28gA\nAAQDAEcwRQIgMiBVCk6C4EylG885QJIv8X2wpplMtdWJxyt3JVQ56NUCIQC6uZDM\nw0VrwTXkW4eLg73D5Z89Z8tadQwizoXyjBAaYjANBgkqhkiG9w0BAQsFAAOCAQEA\nHMEZInJfTjgc0JTF+C7ZR/8rk1c511SMI9RcmNjnrkoP3pBPQTSEU92bGaCYvOYO\nRMB1bAOk/Ql9kDBSRDcKiOz8wPWZBgyJZRMSVyO5WbLM//8jsP83vmvFNbSo7Tuk\n5R6KAtzOMOymwITZeM6k4saoyB847rmlPDIkD/RRM0Col+Ik8+V3HSdHsnrA/3Ep\n1ICdUJvE0M9oEnbO2DWrCz6yOuz0AcfcmMGTBLqlsFdoJpcXj7c1QcCJaK1B7qaQ\nuQXdywqElVO6BrBxHQROLxjLHXMNblOzvrXYWGkhiQ+0cYYCMBtbhpphhebxnUBV\nuCxvp9/yY1GmsG6lwzLYEw==\n-----END CERTIFICATE-----\n",
+                "is_ca": false,
+                "issuer": "CN=Amazon RSA 2048 M01,O=Amazon,C=US",
+                "max_path_length": -1,
+                "not_after": "2027-02-25T23:59:59Z",
+                "not_before": "2026-01-27T00:00:00Z",
+                "public_key_algorithm": "RSA",
+                "serial_number": "17802209110544621593474031143248740105",
+                "sha1_fingerprint": "37647fee5fc063960139521aa2400c75db27825b",
+                "signature_algorithm": "SHA256-RSA",
+                "subject": "CN=*.eks.us-east-1.amazonaws.com",
+                "version": 3
+              }
+            ],
+            "content": null,
+            "id": "b1b539daa206035ae3c3e28288b0681fa1b462f3",
+            "url": "https://oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+            "verify_chain": true
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_event_rule",
+      "name": "karpenter_instance_state",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:events:us-east-1:916994818641:rule/kindswap-karpenter-instance-state",
+            "description": "Karpenter EC2 instance state change",
+            "event_bus_name": "default",
+            "event_pattern": "{\"detail-type\":[\"EC2 Instance State-change Notification\"],\"source\":[\"aws.ec2\"]}",
+            "force_destroy": false,
+            "id": "kindswap-karpenter-instance-state",
+            "is_enabled": true,
+            "name": "kindswap-karpenter-instance-state",
+            "name_prefix": "",
+            "role_arn": "",
+            "schedule_expression": "",
+            "state": "ENABLED",
+            "tags": {},
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Project": "kindswap"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_event_rule",
+      "name": "karpenter_spot_interruption",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:events:us-east-1:916994818641:rule/kindswap-karpenter-spot-interruption",
+            "description": "Karpenter spot instance interruption notice",
+            "event_bus_name": "default",
+            "event_pattern": "{\"detail-type\":[\"EC2 Spot Instance Interruption Warning\"],\"source\":[\"aws.ec2\"]}",
+            "force_destroy": false,
+            "id": "kindswap-karpenter-spot-interruption",
+            "is_enabled": true,
+            "name": "kindswap-karpenter-spot-interruption",
+            "name_prefix": "",
+            "role_arn": "",
+            "schedule_expression": "",
+            "state": "ENABLED",
+            "tags": {},
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Project": "kindswap"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_event_target",
+      "name": "karpenter_instance_state",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "appsync_target": [],
+            "arn": "arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption",
+            "batch_target": [],
+            "dead_letter_config": [],
+            "ecs_target": [],
+            "event_bus_name": "default",
+            "force_destroy": false,
+            "http_target": [],
+            "id": "kindswap-karpenter-instance-state-terraform-2026032118475905120000000f",
+            "input": "",
+            "input_path": "",
+            "input_transformer": [],
+            "kinesis_target": [],
+            "redshift_target": [],
+            "retry_policy": [],
+            "role_arn": "",
+            "rule": "kindswap-karpenter-instance-state",
+            "run_command_targets": [],
+            "sagemaker_pipeline_target": [],
+            "sqs_target": [],
+            "target_id": "terraform-2026032118475905120000000f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_cloudwatch_event_rule.karpenter_instance_state",
+            "aws_sqs_queue.karpenter_interruption"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_event_target",
+      "name": "karpenter_spot_interruption",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "appsync_target": [],
+            "arn": "arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption",
+            "batch_target": [],
+            "dead_letter_config": [],
+            "ecs_target": [],
+            "event_bus_name": "default",
+            "force_destroy": false,
+            "http_target": [],
+            "id": "kindswap-karpenter-spot-interruption-terraform-2026032118475905010000000e",
+            "input": "",
+            "input_path": "",
+            "input_transformer": [],
+            "kinesis_target": [],
+            "redshift_target": [],
+            "retry_policy": [],
+            "role_arn": "",
+            "rule": "kindswap-karpenter-spot-interruption",
+            "run_command_targets": [],
+            "sagemaker_pipeline_target": [],
+            "sqs_target": [],
+            "target_id": "terraform-2026032118475905010000000e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_cloudwatch_event_rule.karpenter_spot_interruption",
+            "aws_sqs_queue.karpenter_interruption"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "eks_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:logs:us-east-1:916994818641:log-group:/aws/eks/kindswap-cluster/cluster",
+            "id": "/aws/eks/kindswap-cluster/cluster",
+            "kms_key_id": "arn:aws:kms:us-east-1:916994818641:key/6cc1df59-c085-45df-a7c0-438c3047455d",
+            "log_group_class": "STANDARD",
+            "name": "/aws/eks/kindswap-cluster/cluster",
+            "name_prefix": "",
+            "retention_in_days": 30,
+            "skip_destroy": false,
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-eks-cluster-logs",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-eks-cluster-logs",
+              "Project": "kindswap"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_access_entry",
+      "name": "github_actions",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_entry_arn": "arn:aws:eks:us-east-1:916994818641:access-entry/kindswap-cluster/role/916994818641/kindswap-github-actions-role/6ece88e5-6e91-a2ed-b45a-83c987658e99",
+            "cluster_name": "kindswap-cluster",
+            "created_at": "2026-03-21T19:06:40Z",
+            "id": "kindswap-cluster:arn:aws:iam::916994818641:role/kindswap-github-actions-role",
+            "kubernetes_groups": [],
+            "modified_at": "2026-03-21T19:06:40Z",
+            "principal_arn": "arn:aws:iam::916994818641:role/kindswap-github-actions-role",
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-github-actions-access",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-github-actions-access",
+              "Project": "kindswap"
+            },
+            "timeouts": null,
+            "type": "STANDARD",
+            "user_name": "arn:aws:sts::916994818641:assumed-role/kindswap-github-actions-role/{{SessionName}}"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_access_entry",
+      "name": "karpenter_node",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_entry_arn": "arn:aws:eks:us-east-1:916994818641:access-entry/kindswap-cluster/role/916994818641/kind_swap_karpenter_node_role/48ce88e5-6e96-793a-d71a-5dc96a11c63f",
+            "cluster_name": "kindswap-cluster",
+            "created_at": "2026-03-21T19:06:41Z",
+            "id": "kindswap-cluster:arn:aws:iam::916994818641:role/kind_swap_karpenter_node_role",
+            "kubernetes_groups": [
+              "system:nodes"
+            ],
+            "modified_at": "2026-03-21T19:06:41Z",
+            "principal_arn": "arn:aws:iam::916994818641:role/kind_swap_karpenter_node_role",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Project": "kind_swap"
+            },
+            "timeouts": null,
+            "type": "EC2_LINUX",
+            "user_name": "system:node:{{EC2PrivateDNSName}}"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "aws_iam_role.karpenter_node",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_access_policy_association",
+      "name": "github_actions_admin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "access_scope": [
+              {
+                "namespaces": [],
+                "type": "cluster"
+              }
+            ],
+            "associated_at": "2026-03-21 19:06:42.108 +0000 UTC",
+            "cluster_name": "kindswap-cluster",
+            "id": "kindswap-cluster#arn:aws:iam::916994818641:role/kindswap-github-actions-role#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy",
+            "modified_at": "2026-03-21 19:06:42.108 +0000 UTC",
+            "policy_arn": "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy",
+            "principal_arn": "arn:aws:iam::916994818641:role/kindswap-github-actions-role",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_access_entry.github_actions",
+            "aws_eks_cluster.main",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_cluster",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "access_config": [
+              {
+                "authentication_mode": "API",
+                "bootstrap_cluster_creator_admin_permissions": true
+              }
+            ],
+            "arn": "arn:aws:eks:us-east-1:916994818641:cluster/kindswap-cluster",
+            "bootstrap_self_managed_addons": true,
+            "certificate_authority": [
+              {
+                "data": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJV0l5YkkvcHRST013RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBek1qRXhPRFUzTUROYUZ3MHpOakF6TVRneE9UQXlNRE5hTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUM3eTZxQ25NSkdtaTE3OGw4OFc0Qm83L1FIUlZna2oyd095Z2t4ZDEwNlF2WHFDRVFmbEg2YmJWNHYKM09VS0tFQXVneXRXOGxUVUpDTHIwMklYT3d5c3V0aWM1ZjJ1RW9xUnQrU0hwaDdSdENidTUwTGd2WDY2NzN6NApkWXR6T0FhOWFnaVJKb2ZBY1VZYjcxM1p0cFlTZEpNMXFVRlB2UlBpMlVoL0pBYlNUOXFaNWgwU3BvZ0NnNVdTCjJGZUNtR1RQTCs2TGpOZTdWaEpGeWZPRmY3NlJiZS94T3ZLS1ljOFY5ZGJvaTNjTDlRQ3EzQm10Tm01SzlhZGMKSVozc3pXcEE4d3EvdUVOUlJIbUhMdERpblZrWm83cXgxeTB2SFphWHY1UHVLZzNhZWRsK0hrSHdOeWllUEM4TQpBQSthdW0vODlVTjJVU2t2bGhHQjBxVXNVN0puQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSQUVDQ1RacVc3V2pLTHFET1c1R00yNjhqZlN6QVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQlpUR2FLaDJ3awpWeVRHci9yQWZLVTNmSzlIajZYeG51NVVtV1M3ODArOCtQY2dheVh5eUdoVHczam12K0lXUVlYc1FENDhzZXAxCmtPd3RZeVNXanFJRlVUOFB1NFhoYzV3Q3ZRQy92dmZMZ2NITmZXVFA3c2krZnVOaFc4a2NvaFpJTUswekZWWmYKQ0ptS2VodmVzenlqN0liME41SlppNEFYa2VNRmZ5VVZYMWNrRTF5QjE5WkNBd2ZaRTdlZHh5SnRKTTh0eWZmbQpnWm9aN2dDNnRLTHc3VGdQRS9PUUtzY0N4MktTUW9adTdrU05oeW9NbEdGVWxybjlvZ3BCZjA3aGtmMHI5c3V6Ci8vRFA5WVJFaGIyNElkVXN6REFvWXVaenRpN3UrOHFnTlhwbmZsUUR1M0ZSaEpoSG5LclFROHd6YWhyTHYzd0QKWnpsT1oxeFZqRElECi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+              }
+            ],
+            "cluster_id": null,
+            "compute_config": [],
+            "created_at": "2026-03-21T18:56:21Z",
+            "enabled_cluster_log_types": [
+              "api",
+              "audit",
+              "authenticator",
+              "controllerManager",
+              "scheduler"
+            ],
+            "encryption_config": [
+              {
+                "provider": [
+                  {
+                    "key_arn": "arn:aws:kms:us-east-1:916994818641:key/6cc1df59-c085-45df-a7c0-438c3047455d"
+                  }
+                ],
+                "resources": [
+                  "secrets"
+                ]
+              }
+            ],
+            "endpoint": "https://4145AF234281488EDD0867A3236FDAF7.gr7.us-east-1.eks.amazonaws.com",
+            "force_update_version": null,
+            "id": "kindswap-cluster",
+            "identity": [
+              {
+                "oidc": [
+                  {
+                    "issuer": "https://oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7"
+                  }
+                ]
+              }
+            ],
+            "kubernetes_network_config": [
+              {
+                "elastic_load_balancing": [
+                  {
+                    "enabled": false
+                  }
+                ],
+                "ip_family": "ipv4",
+                "service_ipv4_cidr": "172.20.0.0/16",
+                "service_ipv6_cidr": ""
+              }
+            ],
+            "name": "kindswap-cluster",
+            "outpost_config": [],
+            "platform_version": "eks.55",
+            "remote_network_config": [],
+            "role_arn": "arn:aws:iam::916994818641:role/kindswap-eks-cluster-role",
+            "status": "ACTIVE",
+            "storage_config": [],
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-cluster",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-cluster",
+              "Project": "kindswap"
+            },
+            "timeouts": null,
+            "upgrade_policy": [
+              {
+                "support_type": "EXTENDED"
+              }
+            ],
+            "version": "1.31",
+            "vpc_config": [
+              {
+                "cluster_security_group_id": "sg-09757d9b72569678a",
+                "endpoint_private_access": true,
+                "endpoint_public_access": true,
+                "public_access_cidrs": [
+                  "0.0.0.0/0"
+                ],
+                "security_group_ids": [
+                  "sg-02ad44b964321c281"
+                ],
+                "subnet_ids": [
+                  "subnet-024da76e845378ea4",
+                  "subnet-08df955464b06a7b4"
+                ],
+                "vpc_id": "vpc-043b017aea0ecaf2d"
+              }
+            ],
+            "zonal_shift_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjkwMDAwMDAwMDAwMCwidXBkYXRlIjozNjAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eks_node_group",
+      "name": "core_nodes",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 0,
+          "attributes": {
+            "ami_type": null,
+            "arn": null,
+            "capacity_type": "ON_DEMAND",
+            "cluster_name": "kindswap-cluster",
+            "disk_size": null,
+            "force_update_version": null,
+            "id": "kindswap-cluster:kindswap-core-nodes",
+            "instance_types": [
+              "t3.medium"
+            ],
+            "labels": {
+              "node-type": "core",
+              "role": "system"
+            },
+            "launch_template": [
+              {
+                "id": "lt-0045af2d04d3c3409",
+                "name": "",
+                "version": "2"
+              }
+            ],
+            "node_group_name": "kindswap-core-nodes",
+            "node_group_name_prefix": null,
+            "node_repair_config": null,
+            "node_role_arn": "arn:aws:iam::916994818641:role/kindswap-eks-node-role",
+            "release_version": null,
+            "remote_access": [],
+            "resources": null,
+            "scaling_config": [
+              {
+                "desired_size": 2,
+                "max_size": 4,
+                "min_size": 1
+              }
+            ],
+            "status": null,
+            "subnet_ids": [
+              "subnet-024da76e845378ea4",
+              "subnet-08df955464b06a7b4"
+            ],
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-core-nodes",
+              "Project": "kindswap",
+              "karpenter.sh/discovery": "kindswap-cluster"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-core-nodes",
+              "Project": "kindswap",
+              "karpenter.sh/discovery": "kindswap-cluster"
+            },
+            "taint": [
+              {
+                "effect": "NO_SCHEDULE",
+                "key": "CriticalAddonsOnly",
+                "value": "true"
+              }
+            ],
+            "timeouts": null,
+            "update_config": [
+              {
+                "max_unavailable": 1,
+                "max_unavailable_percentage": 0
+              }
+            ],
+            "version": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozNjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6MzYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "aws_launch_template.core_nodes",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_instance_profile",
+      "name": "karpenter_node",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:instance-profile/kind_swap_karpenter_node_profile",
+            "create_date": "2026-03-21T18:47:32Z",
+            "id": "kind_swap_karpenter_node_profile",
+            "name": "kind_swap_karpenter_node_profile",
+            "name_prefix": "",
+            "path": "/",
+            "role": "kind_swap_karpenter_node_role",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Project": "kind_swap"
+            },
+            "unique_id": "AIPA5LAJGQJIXAKPWJ2R7"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.karpenter_node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_instance_profile",
+      "name": "node",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:instance-profile/kind_swap_eks_node_profile",
+            "create_date": "2026-03-21T18:47:31Z",
+            "id": "kind_swap_eks_node_profile",
+            "name": "kind_swap_eks_node_profile",
+            "name_prefix": "",
+            "path": "/",
+            "role": "kind_swap_eks_node_role",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Project": "kind_swap"
+            },
+            "unique_id": "AIPA5LAJGQJIURUGNWTVX"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_openid_connect_provider",
+      "name": "eks_cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+            "client_id_list": [
+              "sts.amazonaws.com"
+            ],
+            "id": "arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7",
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-eks-oidc",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-eks-oidc",
+              "Project": "kindswap"
+            },
+            "thumbprint_list": [
+              "06b25927c42a721631c1efd9431e648fa62e1e39"
+            ],
+            "url": "oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security",
+            "data.tls_certificate.eks_cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "cluster",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:role/kind_swap_eks_cluster_role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"eks.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-03-21T18:47:30Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "kind_swap_eks_cluster_role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+              "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+            ],
+            "max_session_duration": 3600,
+            "name": "kind_swap_eks_cluster_role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Name": "kind_swap_eks_cluster_role",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Name": "kind_swap_eks_cluster_role",
+              "Project": "kind_swap"
+            },
+            "unique_id": "AROA5LAJGQJIYBV5RZ666"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "karpenter_controller",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:role/kindswap-karpenter-controller",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringEquals\":{\"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:aud\":\"sts.amazonaws.com\",\"oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7:sub\":\"system:serviceaccount:karpenter:karpenter\"}},\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"arn:aws:iam::916994818641:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/4145AF234281488EDD0867A3236FDAF7\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-03-21T19:06:43Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "kindswap-karpenter-controller",
+            "inline_policy": [
+              {
+                "name": "kindswap-karpenter-controller-policy",
+                "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"ec2:CreateFleet\",\"ec2:CreateLaunchTemplate\",\"ec2:CreateTags\",\"ec2:DeleteLaunchTemplate\",\"ec2:DescribeAvailabilityZones\",\"ec2:DescribeImages\",\"ec2:DescribeInstances\",\"ec2:DescribeInstanceTypeOfferings\",\"ec2:DescribeInstanceTypes\",\"ec2:DescribeLaunchTemplates\",\"ec2:DescribeSecurityGroups\",\"ec2:DescribeSpotPriceHistory\",\"ec2:DescribeSubnets\",\"ec2:RunInstances\",\"ec2:TerminateInstances\"],\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"Karpenter\"},{\"Action\":\"iam:PassRole\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:iam::916994818641:role/kindswap-eks-node-role\",\"Sid\":\"PassNodeInstanceRole\"},{\"Action\":[\"eks:DescribeCluster\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:eks:us-east-1:916994818641:cluster/kindswap-cluster\",\"Sid\":\"EKSClusterEndpointLookup\"},{\"Action\":[\"ssm:GetParameter\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:ssm:us-east-1::parameter/aws/service/eks/optimized-ami/*\",\"Sid\":\"SSMGetParameter\"},{\"Action\":[\"sqs:DeleteMessage\",\"sqs:GetQueueAttributes\",\"sqs:GetQueueUrl\",\"sqs:ReceiveMessage\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption\",\"Sid\":\"AllowInterruptionQueueActions\"}]}"
+              }
+            ],
+            "managed_policy_arns": [],
+            "max_session_duration": 3600,
+            "name": "kindswap-karpenter-controller",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-karpenter-controller",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-karpenter-controller",
+              "Project": "kindswap"
+            },
+            "unique_id": "AROA5LAJGQJI4DNDBYDEU"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "aws_iam_openid_connect_provider.eks_cluster",
+            "data.aws_iam_policy_document.karpenter_controller_assume_role",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security",
+            "data.tls_certificate.eks_cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "karpenter_node",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:role/kind_swap_karpenter_node_role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-03-21T18:47:30Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "kind_swap_karpenter_node_role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+              "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+              "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+              "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+            ],
+            "max_session_duration": 3600,
+            "name": "kind_swap_karpenter_node_role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Name": "kind_swap_karpenter_node_role",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Name": "kind_swap_karpenter_node_role",
+              "Project": "kind_swap"
+            },
+            "unique_id": "AROA5LAJGQJIQILWBEUQ4"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "node",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::916994818641:role/kind_swap_eks_node_role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-03-21T18:47:30Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "kind_swap_eks_node_role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+              "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+              "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+              "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+              "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+            ],
+            "max_session_duration": 3600,
+            "name": "kind_swap_eks_node_role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Name": "kind_swap_eks_node_role",
+              "Project": "kind_swap"
+            },
+            "tags_all": {
+              "Environment": "production",
+              "ManagedBy": "terraform",
+              "Module": "03-eks",
+              "Name": "kind_swap_eks_node_role",
+              "Project": "kind_swap"
+            },
+            "unique_id": "AROA5LAJGQJIUVRQKHKWG"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "karpenter_controller",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kindswap-karpenter-controller:kindswap-karpenter-controller-policy",
+            "name": "kindswap-karpenter-controller-policy",
+            "name_prefix": "",
+            "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Action\":[\"ec2:CreateFleet\",\"ec2:CreateLaunchTemplate\",\"ec2:CreateTags\",\"ec2:DeleteLaunchTemplate\",\"ec2:DescribeAvailabilityZones\",\"ec2:DescribeImages\",\"ec2:DescribeInstances\",\"ec2:DescribeInstanceTypeOfferings\",\"ec2:DescribeInstanceTypes\",\"ec2:DescribeLaunchTemplates\",\"ec2:DescribeSecurityGroups\",\"ec2:DescribeSpotPriceHistory\",\"ec2:DescribeSubnets\",\"ec2:RunInstances\",\"ec2:TerminateInstances\"],\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"Karpenter\"},{\"Action\":\"iam:PassRole\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:iam::916994818641:role/kindswap-eks-node-role\",\"Sid\":\"PassNodeInstanceRole\"},{\"Action\":[\"eks:DescribeCluster\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:eks:us-east-1:916994818641:cluster/kindswap-cluster\",\"Sid\":\"EKSClusterEndpointLookup\"},{\"Action\":[\"ssm:GetParameter\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:ssm:us-east-1::parameter/aws/service/eks/optimized-ami/*\",\"Sid\":\"SSMGetParameter\"},{\"Action\":[\"sqs:DeleteMessage\",\"sqs:GetQueueAttributes\",\"sqs:GetQueueUrl\",\"sqs:ReceiveMessage\"],\"Effect\":\"Allow\",\"Resource\":\"arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption\",\"Sid\":\"AllowInterruptionQueueActions\"}]}",
+            "role": "kindswap-karpenter-controller"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_cloudwatch_log_group.eks_cluster",
+            "aws_eks_cluster.main",
+            "aws_iam_openid_connect_provider.eks_cluster",
+            "aws_iam_role.karpenter_controller",
+            "aws_sqs_queue.karpenter_interruption",
+            "data.aws_caller_identity.current",
+            "data.aws_iam_policy_document.karpenter_controller_assume_role",
+            "data.aws_region.current",
+            "data.terraform_remote_state.networking",
+            "data.terraform_remote_state.security",
+            "data.tls_certificate.eks_cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "cluster_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_cluster_role-20260321184731772500000008",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+            "role": "kind_swap_eks_cluster_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "cluster_vpc_resource_controller",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_cluster_role-20260321184731785300000009",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+            "role": "kind_swap_eks_cluster_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "karpenter_node_cni_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_karpenter_node_role-2026032118473217920000000d",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+            "role": "kind_swap_karpenter_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.karpenter_node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "karpenter_node_ecr_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_karpenter_node_role-2026032118473215140000000b",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+            "role": "kind_swap_karpenter_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.karpenter_node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "karpenter_node_ssm_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_karpenter_node_role-2026032118473210210000000a",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "role": "kind_swap_karpenter_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.karpenter_node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "karpenter_node_worker_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_karpenter_node_role-2026032118473216160000000c",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+            "role": "kind_swap_karpenter_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.karpenter_node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "node_cni_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_node_role-20260321184731176900000003",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+            "role": "kind_swap_eks_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "node_ebs_csi_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_node_role-20260321184731475600000005",
+            "policy_arn": "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy",
+            "role": "kind_swap_eks_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "node_ecr_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_node_role-20260321184731246700000004",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+            "role": "kind_swap_eks_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "node_ssm_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_node_role-20260321184731541500000006",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "role": "kind_swap_eks_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "node_worker_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "kind_swap_eks_node_role-20260321184731601500000007",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+            "role": "kind_swap_eks_node_role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.node"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_launch_template",
+      "name": "core_nodes",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:916994818641:launch-template/lt-0045af2d04d3c3409",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/xvda",
+                "ebs": [
+                  {
+                    "delete_on_termination": "true",
+                    "encrypted": "true",
+                    "iops": 0,
+                    "kms_key_id": "",
+                    "snapshot_id": "",
+                    "throughput": 0,
+                    "volume_initialization_rate": 0,
+                    "volume_size": 50,
+                    "volume_type": "gp3"
+                  }
+                ],
+                "no_device": "",
+                "virtual_name": ""
+              }
+            ],
+            "capacity_reservation_specification": [],
+            "cpu_options": [],
+            "credit_specification": [],
+            "default_version": 2,
+            "description": "Launch template for KindSwap EKS core system node group",
+            "disable_api_stop": false,
+            "disable_api_termination": false,
+            "ebs_optimized": "",
+            "elastic_gpu_specifications": [],
+            "elastic_inference_accelerator": [],
+            "enclave_options": [],
+            "hibernation_options": [],
+            "iam_instance_profile": [],
+            "id": "lt-0045af2d04d3c3409",
+            "image_id": "",
+            "instance_initiated_shutdown_behavior": "",
+            "instance_market_options": [],
+            "instance_requirements": [],
+            "instance_type": "",
+            "kernel_id": "",
+            "key_name": "",
+            "latest_version": 2,
+            "license_specification": [],
+            "maintenance_options": [],
+            "metadata_options": [
+              {
+                "http_endpoint": "enabled",
+                "http_protocol_ipv6": "",
+                "http_put_response_hop_limit": 2,
+                "http_tokens": "required",
+                "instance_metadata_tags": "enabled"
+              }
+            ],
+            "monitoring": [
+              {
+                "enabled": true
+              }
+            ],
+            "name": "kindswap-core-nodes-20260321184729159600000001",
+            "name_prefix": "kindswap-core-nodes-",
+            "network_interfaces": [],
+            "placement": [],
+            "private_dns_name_options": [],
+            "ram_disk_id": "",
+            "security_group_names": [],
+            "tag_specifications": [
+              {
+                "resource_type": "instance",
+                "tags": {
+                  "Environment": "all",
+                  "Name": "kindswap-core-node",
+                  "NodeGroup": "kindswap-core-nodes"
+                }
+              }
+            ],
+            "tags": {},
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Project": "kindswap"
+            },
+            "update_default_version": null,
+            "user_data": "",
+            "vpc_security_group_ids": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_sqs_queue",
+      "name": "karpenter_interruption",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption",
+            "content_based_deduplication": false,
+            "deduplication_scope": "",
+            "delay_seconds": 0,
+            "fifo_queue": false,
+            "fifo_throughput_limit": "",
+            "id": "https://sqs.us-east-1.amazonaws.com/916994818641/kindswap-karpenter-interruption",
+            "kms_data_key_reuse_period_seconds": 300,
+            "kms_master_key_id": "",
+            "max_message_size": 262144,
+            "message_retention_seconds": 300,
+            "name": "kindswap-karpenter-interruption",
+            "name_prefix": "",
+            "policy": "{\"Statement\":[{\"Action\":\"sqs:SendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"events.amazonaws.com\",\"sqs.amazonaws.com\"]},\"Resource\":\"arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption\"}],\"Version\":\"2012-10-17\"}",
+            "receive_wait_time_seconds": 0,
+            "redrive_allow_policy": "",
+            "redrive_policy": "",
+            "sqs_managed_sse_enabled": true,
+            "tags": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-karpenter-interruption",
+              "Project": "kindswap"
+            },
+            "tags_all": {
+              "ManagedBy": "Terraform",
+              "Module": "03-eks",
+              "Name": "kindswap-karpenter-interruption",
+              "Project": "kindswap"
+            },
+            "timeouts": null,
+            "url": "https://sqs.us-east-1.amazonaws.com/916994818641/kindswap-karpenter-interruption",
+            "visibility_timeout_seconds": 30
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAsImRlbGV0ZSI6MTgwMDAwMDAwMDAwLCJ1cGRhdGUiOjE4MDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_sqs_queue_policy",
+      "name": "karpenter_interruption",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "id": "https://sqs.us-east-1.amazonaws.com/916994818641/kindswap-karpenter-interruption",
+            "policy": "{\"Statement\":[{\"Action\":\"sqs:SendMessage\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":[\"events.amazonaws.com\",\"sqs.amazonaws.com\"]},\"Resource\":\"arn:aws:sqs:us-east-1:916994818641:kindswap-karpenter-interruption\"}],\"Version\":\"2012-10-17\"}",
+            "queue_url": "https://sqs.us-east-1.amazonaws.com/916994818641/kindswap-karpenter-interruption"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_sqs_queue.karpenter_interruption"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

@@ -1,0 +1,23 @@
+# Frontend deployment values
+# The frontend is a static site hosted on S3 + CloudFront (not Kubernetes).
+# This chart wraps deployment jobs that sync built assets to S3.
+
+aws:
+  region: us-east-1
+  s3BucketName: ""          # set via --set or CI/CD from Terraform outputs
+  cloudfrontDistributionId: "" # set via --set or CI/CD from Terraform outputs
+
+build:
+  nodeVersion: "20"
+  buildCommand: "npm run build"
+  outputDir: "dist"
+
+deploy:
+  invalidatePaths:
+    - "/*"
+
+# These are used by the deployment job / CI step, not a running K8s service.
+image:
+  repository: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/kind_swap_frontend
+  tag: latest
+  pullPolicy: Always

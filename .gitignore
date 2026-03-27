@@ -1,5 +1,5 @@
 # ============================================================================
-# KINDSWAP GITIGNORE — Production-Safe Configuration
+# KINDSWAP GITIGNORE â€” Production-Safe Configuration
 # ============================================================================
 # Security-Critical: Never commit secrets, credentials, private keys, or state files
 
@@ -140,7 +140,7 @@ build.log
 test-results/
 
 # ============================================================================
-# 5. DEPENDENCY LOCK FILES (Optional — Uncomment if using lock files)
+# 5. DEPENDENCY LOCK FILES (Optional â€” Uncomment if using lock files)
 # ============================================================================
 # package-lock.json  # Uncomment if not needed in repo
 # yarn.lock          # Uncomment if not needed in repo
@@ -215,8 +215,13 @@ secrets/
 # ============================================================================
 # SAFE TO COMMIT
 # ============================================================================
-# .env.example — Example with dummy values (NO REAL SECRETS)
-# *.example — Example configuration files
-# *.sample — Sample files
-# docs/ — Documentation
-# .github/workflows/*.yml — CI/CD pipelines (reviewed for no secrets)
+# .env.example â€” Example with dummy values (NO REAL SECRETS)
+# *.example â€” Example configuration files
+# *.sample â€” Sample files
+# docs/ â€” Documentation
+# .github/workflows/*.yml â€” CI/CD pipelines (reviewed for no secrets)
+*.tfvars
+
+*.tfvars.json
+
+

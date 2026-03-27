@@ -1,0 +1,60 @@
+terraform {
+  required_version = ">= 1.6.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.12"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.27"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+
+  default_tags {
+    tags = {
+      Project   = var.project
+      ManagedBy = "terraform"
+      Module    = "04-monitoring"
+    }
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
+    cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args = [
+        "eks", "get-token",
+        "--cluster-name", data.terraform_remote_state.eks.outputs.cluster_name,
+        "--region", var.aws_region
+      ]
+    }
+  }
+}
+
+provider "kubernetes" {
+  host                   = data.terraform_remote_state.eks.outputs.cluster_endpoint
+  cluster_ca_certificate = base64decode(data.terraform_remote_state.eks.outputs.cluster_certificate_authority_data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    args = [
+      "eks", "get-token",
+      "--cluster-name", data.terraform_remote_state.eks.outputs.cluster_name,
+      "--region", var.aws_region
+    ]
+  }
+}
+
