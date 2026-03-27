@@ -101,47 +101,68 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
     );
 
     /**
-     * Create indexes for query performance
+     * Create indexes for query performance - wrapped in try-catch for idempotency
      */
-    await queryRunner.createIndex(
-      'contribution_submissions',
-      new TableIndex({
-        columnNames: ['wallet'],
-        name: 'idx_contribution_wallet',
-      }),
-    );
+    try {
+      await queryRunner.createIndex(
+        'contribution_submissions',
+        new TableIndex({
+          columnNames: ['wallet'],
+          name: 'idx_contribution_wallet',
+        }),
+      );
+    } catch (err: any) {
+      // Index might already exist if migration was partially run
+      if (!err.message?.includes('already exists')) throw err;
+    }
 
-    await queryRunner.createIndex(
-      'contribution_submissions',
-      new TableIndex({
-        columnNames: ['status'],
-        name: 'idx_contribution_status',
-      }),
-    );
+    try {
+      await queryRunner.createIndex(
+        'contribution_submissions',
+        new TableIndex({
+          columnNames: ['status'],
+          name: 'idx_contribution_status',
+        }),
+      );
+    } catch (err: any) {
+      if (!err.message?.includes('already exists')) throw err;
+    }
 
-    await queryRunner.createIndex(
-      'contribution_submissions',
-      new TableIndex({
-        columnNames: ['createdAt'],
-        name: 'idx_contribution_created_at',
-      }),
-    );
+    try {
+      await queryRunner.createIndex(
+        'contribution_submissions',
+        new TableIndex({
+          columnNames: ['createdAt'],
+          name: 'idx_contribution_created_at',
+        }),
+      );
+    } catch (err: any) {
+      if (!err.message?.includes('already exists')) throw err;
+    }
 
-    await queryRunner.createIndex(
-      'contribution_submissions',
-      new TableIndex({
-        columnNames: ['wallet', 'category', 'createdAt'],
-        name: 'idx_contribution_wallet_category_date',
-      }),
-    );
+    try {
+      await queryRunner.createIndex(
+        'contribution_submissions',
+        new TableIndex({
+          columnNames: ['wallet', 'category', 'createdAt'],
+          name: 'idx_contribution_wallet_category_date',
+        }),
+      );
+    } catch (err: any) {
+      if (!err.message?.includes('already exists')) throw err;
+    }
 
-    await queryRunner.createIndex(
-      'contribution_submissions',
-      new TableIndex({
-        columnNames: ['reviewedBy'],
-        name: 'idx_contribution_reviewed_by',
-      }),
-    );
+    try {
+      await queryRunner.createIndex(
+        'contribution_submissions',
+        new TableIndex({
+          columnNames: ['reviewedBy'],
+          name: 'idx_contribution_reviewed_by',
+        }),
+      );
+    } catch (err: any) {
+      if (!err.message?.includes('already exists')) throw err;
+    }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
