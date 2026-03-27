@@ -24,7 +24,9 @@ environment: dev
 
 serviceAccount:
   # Reuse backend IRSA-enabled service account until a dedicated admin backend IRSA role is provisioned.
+  create: true
   name: kindswap-backend
+  annotations: {}
 
 pgPool:
   max:

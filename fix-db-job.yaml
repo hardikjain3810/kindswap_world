@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fix-prod-migration
+  namespace: production
+  labels:
+    app: kindswap
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      serviceAccountName: kindswap-backend-prod-irsa
+      containers:
+      - name: db-fix
+        image: postgres:16-alpine
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Connecting to RDS with credentials from environment..."
+          
+          # Get DB credentials from mounted secrets
+          DB_HOST="kindswap-prod.cov8e4myuic2.us-east-1.rds.amazonaws.com"
+          DB_USER="postgres"
+          DB_PASSWORD=$(cat /run/secrets/db-password)
+          DB_NAME="kindswap"
+          
+          echo "Host: $DB_HOST"
+          echo "User: $DB_USER"
+          echo "Database: $DB_NAME"
+          
+          # Wait for connectivity
+          until psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1;" 2>/dev/null; do
+            echo "Waiting for RDS connection..."
+            sleep 2
+          done
+          
+          echo "Connected! Running fix..."
+          
+          # Execute the fix
+          psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" << EOSQL
+          BEGIN;
+          DELETE FROM typeorm_metadata WHERE name = 'ChangeAdminPermissionsToArray1739356400000';
+          ALTER TABLE admins ALTER COLUMN permissions DROP DEFAULT;
+          COMMIT;
+          EOSQL
+          
+          echo "Fix applied successfully!"
+          
+          # Verify
+          psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" -c "SELECT column_name, column_default, data_type FROM information_schema.columns WHERE table_name = 'admins' AND column_name = 'permissions';"
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: password
+      restartPolicy: Never
+  backoffLimit: 3

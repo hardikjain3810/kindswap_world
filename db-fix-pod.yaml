@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-fix-pod
+  namespace: production
+spec:
+  serviceAccountName: kindswap-backend
+  containers:
+  - name: psql
+    image: postgres:16-alpine
+    env:
+    - name: PGPASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: kindswap-api-keys
+          key: DB_PASSWORD
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      export DB_HOST="kindswap-prod.cov8e4myuic2.us-east-1.rds.amazonaws.com"
+      export DB_USER="postgres"
+      export DB_NAME="kindswap"
+      
+      echo "Fixing production database..."
+      echo "Host: $DB_HOST"
+      
+      # Run the fix
+      psql -h "$DB_HOST" -U "$DB_USER" -d "$DB_NAME" <<EOF
+      BEGIN;
+      DELETE FROM typeorm_metadata WHERE name = 'ChangeAdminPermissionsToArray1739356400000';
+      ALTER TABLE admins ALTER COLUMN permissions DROP DEFAULT;
+      COMMIT;
+      EOF
+      
+      echo "✓ Database fix completed!"
+      sleep infinity
+  restartPolicy: Never
