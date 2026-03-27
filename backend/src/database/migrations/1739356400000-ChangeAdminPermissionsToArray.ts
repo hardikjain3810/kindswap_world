@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+﻿import { MigrationInterface, QueryRunner } from 'typeorm';
 
 /**
  * Migration: Convert admin permissions column from simple text to text[]
@@ -6,6 +6,13 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
  */
 export class ChangeAdminPermissionsToArray1739356400000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // Step 1: Drop existing default first (required before type change)
+    await queryRunner.query(`
+      ALTER TABLE admins
+      ALTER COLUMN permissions DROP DEFAULT
+    `);
+
+    // Step 2: Change column type with explicit USING clause
     await queryRunner.query(`
       ALTER TABLE admins
       ALTER COLUMN permissions TYPE text[]
@@ -17,6 +24,7 @@ export class ChangeAdminPermissionsToArray1739356400000 implements MigrationInte
       )
     `);
 
+    // Step 3: Set new default as empty array
     await queryRunner.query(`
       ALTER TABLE admins
       ALTER COLUMN permissions SET DEFAULT ARRAY[]::text[]
