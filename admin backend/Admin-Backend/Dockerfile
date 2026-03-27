@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install ALL dependencies including devDependencies (needed for build)
-RUN npm install --prefer-offline
+RUN npm install --prefer-offline --legacy-peer-deps
 
 # ============================================================
 # Stage 2: Build
@@ -48,7 +48,7 @@ WORKDIR /app
 # Copy only what's needed for production
 # Production node_modules (no devDependencies)
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev --prefer-offline && npm cache clean --force
+RUN npm install --omit=dev --prefer-offline --legacy-peer-deps && npm cache clean --force
 
 # Copy compiled application from build stage
 COPY --from=build /app/dist ./dist
