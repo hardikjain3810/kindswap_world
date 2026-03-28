@@ -123,20 +123,32 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
     }
 
     // Create index to optimize the stored procedure queries if not already exists
-    await queryRunner.query(`
+    try {
+      await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_swap_tx_executed_at_status
       ON swap_transactions ("executedAt", status, "pointsAwarded");
     `);
+    } catch (err: any) {
+      console.log('⚠️  Failed to create idx_swap_tx_executed_at_status:', err.message);
+    }
 
-    await queryRunner.query(`
+    try {
+      await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_contribution_reviewed_at_status
       ON contribution_submissions ("reviewedAt", status);
     `);
+    } catch (err: any) {
+      console.log('⚠️  Failed to create idx_contribution_reviewed_at_status:', err.message);
+    }
 
-    await queryRunner.query(`
+    try {
+      await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_kns_award_date_status
       ON kns_award_history ("awardDate", status);
     `);
+    } catch (err: any) {
+      console.log('⚠️  Failed to create idx_kns_award_date_status:', err.message);
+    }
 
     // Create function to get total count for pagination
     try {
