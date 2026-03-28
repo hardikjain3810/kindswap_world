@@ -124,7 +124,7 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
 
     await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_contribution_reviewed_at_status
-      ON contribution_submission ("reviewedAt", status);
+      ON contribution_submissions ("reviewedAt", status);
     `);
 
     await queryRunner.query(`
@@ -165,7 +165,7 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
         ${hasContributionTable ? `
         community_wallets AS (
           SELECT DISTINCT cs.wallet
-          FROM contribution_submission cs
+          FROM contribution_submissions cs
           WHERE cs.status = 'approved'
             AND (v_date_filter IS NULL OR cs."reviewedAt" >= v_date_filter)
         ),` : `
