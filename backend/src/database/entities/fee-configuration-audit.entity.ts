@@ -20,25 +20,25 @@ export class FeeConfigurationAudit {
   /**
    * Reference to the fee_configuration record that was updated
    */
-  @Column('uuid')
+  @Column('uuid', { name: 'config_id' })
   configId: string;
 
   /**
    * Base fee in basis points at time of change
    */
-  @Column('decimal', { precision: 5, scale: 1 })
+  @Column('decimal', { precision: 5, scale: 1, name: 'base_fee_bps' })
   baseFeeBps: number;
 
   /**
    * Charity portion at time of change
    */
-  @Column('decimal', { precision: 5, scale: 4 })
+  @Column('decimal', { precision: 5, scale: 4, name: 'charity_portion' })
   charityPortion: number;
 
   /**
    * KindSwap portion at time of change
    */
-  @Column('decimal', { precision: 5, scale: 4 })
+  @Column('decimal', { precision: 5, scale: 4, name: 'kindswap_portion' })
   kindswapPortion: number;
 
   /**
@@ -73,16 +73,16 @@ export class FeeConfigurationAudit {
    * Admin wallet address who made this change
    * Format: Solana base58 address (44 characters)
    */
-  @Column('varchar', { length: 88, nullable: true })
+  @Column('varchar', { length: 88, nullable: true, name: 'changed_by' })
   changedBy: string;
 
   /**
    * Reason for the change
    * Example: "Adjusted charity split from 50/50 to 40/60"
    */
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: true, name: 'change_reason' })
   changeReason: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'changed_at' })
   changedAt: Date;
 }

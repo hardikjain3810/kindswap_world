@@ -43,7 +43,7 @@ export class FeeTier {
    * Tier name for display
    * Values: "No Tier", "Tier 1", "Tier 2", "Tier 3", "Tier 4"
    */
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, name: 'name' })
   name: string;
 
   /**
@@ -51,7 +51,7 @@ export class FeeTier {
    * Stored as string to maintain precision
    * Values: 0, 5000, 25000, 100000, 500000
    */
-  @Column('bigint')
+  @Column('bigint', { name: 'kns_min' })
   knsMin: string;
 
   /**
@@ -59,7 +59,7 @@ export class FeeTier {
    * Values: 0, 5, 10, 15, 20
    * Formula: effective_fee = base_fee * (1 - discount_percent / 100)
    */
-  @Column('integer')
+  @Column('integer', { name: 'discount_percent' })
   discountPercent: number;
 
   /**
@@ -67,39 +67,39 @@ export class FeeTier {
    * Values: 10.0, 9.5, 9.0, 8.5, 8.0
    * Example: 9.5 = 0.095%
    */
-  @Column('decimal', { precision: 5, scale: 1 })
+  @Column('decimal', { precision: 5, scale: 1, name: 'effective_fee_bps' })
   effectiveFeeBps: number;
 
   /**
    * Order of tiers for sorting and display
    * Values: 0, 1, 2, 3, 4 (lowest to highest)
    */
-  @Column('integer')
+  @Column('integer', { name: 'tier_order' })
   tierOrder: number;
 
   /**
    * Whether this tier is currently active
    * Set to false to soft-delete without losing history
    */
-  @Column('boolean', { default: true })
+  @Column('boolean', { default: true, name: 'is_active' })
   isActive: boolean;
 
   /**
    * Version for optimistic locking
    * Prevents concurrent update conflicts
    */
-  @Column('integer', { default: 0 })
+  @Column('integer', { default: 0, name: 'version' })
   version: number;
 
   /**
    * Admin notes about this tier
    */
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: true, name: 'notes' })
   notes: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
