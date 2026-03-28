@@ -102,6 +102,7 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
 
     /**
      * Create indexes for query performance - wrapped in try-catch for idempotency
+     * Checks for PostgreSQL error code 42P07 (object already exists)
      */
     try {
       await queryRunner.createIndex(
@@ -112,8 +113,8 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
         }),
       );
     } catch (err: any) {
-      // Index might already exist if migration was partially run
-      if (!err.message?.includes('already exists')) throw err;
+      // Ignore "already exists" errors (PostgreSQL error code 42P07)
+      if (err.code !== '42P07') throw err;
     }
 
     try {
@@ -125,7 +126,7 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
         }),
       );
     } catch (err: any) {
-      if (!err.message?.includes('already exists')) throw err;
+      if (err.code !== '42P07') throw err;
     }
 
     try {
@@ -137,7 +138,7 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
         }),
       );
     } catch (err: any) {
-      if (!err.message?.includes('already exists')) throw err;
+      if (err.code !== '42P07') throw err;
     }
 
     try {
@@ -149,7 +150,7 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
         }),
       );
     } catch (err: any) {
-      if (!err.message?.includes('already exists')) throw err;
+      if (err.code !== '42P07') throw err;
     }
 
     try {
@@ -161,7 +162,7 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
         }),
       );
     } catch (err: any) {
-      if (!err.message?.includes('already exists')) throw err;
+      if (err.code !== '42P07') throw err;
     }
   }
 
