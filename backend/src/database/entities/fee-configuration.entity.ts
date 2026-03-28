@@ -63,6 +63,7 @@ export class FeeConfiguration {
     precision: 5,
     scale: 1,
     default: 10.0,
+    name: 'base_fee_bps',
     transformer: {
       to: (value: number) => value,
       from: (value: string) => parseFloat(value),
@@ -79,6 +80,7 @@ export class FeeConfiguration {
     precision: 5,
     scale: 4,
     default: 0.25,
+    name: 'charity_portion',
     transformer: {
       to: (value: number) => value,
       from: (value: string) => parseFloat(value),
@@ -95,6 +97,7 @@ export class FeeConfiguration {
     precision: 5,
     scale: 4,
     default: 0.75,
+    name: 'kindswap_portion',
     transformer: {
       to: (value: number) => value,
       from: (value: string) => parseFloat(value),
@@ -106,20 +109,20 @@ export class FeeConfiguration {
    * Whether this configuration is currently active
    * Set to false to soft-delete without losing history
    */
-  @Column('boolean', { default: true })
+  @Column('boolean', { default: true, name: 'is_active' })
   isActive: boolean;
 
   /**
    * Version for optimistic locking
    * Prevents concurrent update conflicts
    */
-  @Column('integer', { default: 0 })
+  @Column('integer', { default: 0, name: 'version' })
   version: number;
 
   /**
    * Admin notes about this configuration
    */
-  @Column('text', { nullable: true })
+  @Column('text', { nullable: true, name: 'notes' })
   notes: string;
 
   /**
@@ -196,9 +199,9 @@ export class FeeConfiguration {
   @Column('varchar', { length: 88, nullable: true, name: 'staking_wallet' })
   stakingWallet: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
