@@ -26,8 +26,9 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
     const hasContributionTable = existingTables.has('contribution_submissions');
     const hasKnsTable = existingTables.has('kns_award_history');
 
-    // Wrap stored procedure creation in try-catch for idempotency
+    // Wrap stored procedure creation in try-catch with savepoint for transaction safety
     try {
+      await queryRunner.query(`SAVEPOINT sp_leaderboard`);
       await queryRunner.query(`
       CREATE OR REPLACE FUNCTION get_leaderboard(
         p_timeframe VARCHAR(10),
@@ -117,41 +118,53 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
       END;
       $$;
     `);
+      await queryRunner.query(`RELEASE SAVEPOINT sp_leaderboard`);
     } catch (err: any) {
       // If stored procedure creation fails (e.g., due to missing tables), log but continue
+      await queryRunner.query(`ROLLBACK TO SAVEPOINT sp_leaderboard`);
       console.log('⚠️  Failed to create get_leaderboard stored procedure:', err.message);
     }
 
     // Create index to optimize the stored procedure queries if not already exists
     try {
+      await queryRunner.query(`SAVEPOINT sp_idx1`);
       await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_swap_tx_executed_at_status
       ON swap_transactions ("executedAt", status, "pointsAwarded");
     `);
+      await queryRunner.query(`RELEASE SAVEPOINT sp_idx1`);
     } catch (err: any) {
+      await queryRunner.query(`ROLLBACK TO SAVEPOINT sp_idx1`);
       console.log('⚠️  Failed to create idx_swap_tx_executed_at_status:', err.message);
     }
 
     try {
+      await queryRunner.query(`SAVEPOINT sp_idx2`);
       await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_contribution_reviewed_at_status
       ON contribution_submissions ("reviewedAt", status);
     `);
+      await queryRunner.query(`RELEASE SAVEPOINT sp_idx2`);
     } catch (err: any) {
+      await queryRunner.query(`ROLLBACK TO SAVEPOINT sp_idx2`);
       console.log('⚠️  Failed to create idx_contribution_reviewed_at_status:', err.message);
     }
 
     try {
+      await queryRunner.query(`SAVEPOINT sp_idx3`);
       await queryRunner.query(`
       CREATE INDEX IF NOT EXISTS idx_kns_award_date_status
       ON kns_award_history ("awardDate", status);
     `);
+      await queryRunner.query(`RELEASE SAVEPOINT sp_idx3`);
     } catch (err: any) {
+      await queryRunner.query(`ROLLBACK TO SAVEPOINT sp_idx3`);
       console.log('⚠️  Failed to create idx_kns_award_date_status:', err.message);
     }
 
     // Create function to get total count for pagination
     try {
+      await queryRunner.query(`SAVEPOINT sp_count`);
       await queryRunner.query(`
       CREATE OR REPLACE FUNCTION get_leaderboard_count(
         p_timeframe VARCHAR(10)
@@ -214,8 +227,10 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
       END;
       $$;
     `);
+      await queryRunner.query(`RELEASE SAVEPOINT sp_count`);
     } catch (err: any) {
       // If count function creation fails, log but continue
+      await queryRunner.query(`ROLLBACK TO SAVEPOINT sp_count`);
       console.log('⚠️  Failed to create get_leaderboard_count function:', err.message);
     }
 
