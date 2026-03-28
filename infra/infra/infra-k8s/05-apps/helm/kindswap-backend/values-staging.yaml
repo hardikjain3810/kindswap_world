@@ -1,20 +1,22 @@
-environment: production
+# Staging Environment Override Values
+environment: staging
+
 image:
   repository: ""
   tag: latest
   pullPolicy: Always
 
 replicaCount:
-  min: 2
-  max: 10
+  min: 1
+  max: 3
 
 resources:
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
   limits:
-    cpu: 1000m
-    memory: 512Mi
+    cpu: 500m
+    memory: 256Mi
 
 serviceAccount:
   create: true
@@ -25,8 +27,8 @@ nodeSelector: {}
 
 ingress:
   enabled: true
-  host: kindswap.world
-  scheme: internet-facing
+  host: stg.kindswap.world
+  scheme: internal
   vpnCidr: ""
   certArn: arn:aws:acm:us-east-1:916994818641:certificate/f39e16e4-6479-4f02-8999-f600a495736c
 
@@ -34,4 +36,4 @@ hpa:
   targetCPUPercent: 70
 
 pgPool:
-  max: 40
+  max: 50

@@ -30,10 +30,11 @@ import { AdminModule } from './api/admin.module';
     }),
     ScheduleModule.forRoot(),
     // SECURITY: Rate limiting to prevent brute force and DoS attacks
+    // SoW v5: Limit 15 requests per 60 seconds (stricter than default)
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 60 seconds
-        limit: 100, // 100 requests per minute globally
+        limit: 15, // 15 requests per minute (SoW v5 requirement)
       },
     ]),
     TypeOrmModule.forRoot(getDatabaseConfig()),
