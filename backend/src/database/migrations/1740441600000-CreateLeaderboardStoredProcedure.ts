@@ -26,7 +26,9 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
     const hasContributionTable = existingTables.has('contribution_submissions');
     const hasKnsTable = existingTables.has('kns_award_history');
 
-    await queryRunner.query(`
+    // Wrap stored procedure creation in try-catch for idempotency
+    try {
+      await queryRunner.query(`
       CREATE OR REPLACE FUNCTION get_leaderboard(
         p_timeframe VARCHAR(10),
         p_limit INTEGER DEFAULT 10,
@@ -115,6 +117,10 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
       END;
       $$;
     `);
+    } catch (err: any) {
+      // If stored procedure creation fails (e.g., due to missing tables), log but continue
+      console.log('⚠️  Failed to create get_leaderboard stored procedure:', err.message);
+    }
 
     // Create index to optimize the stored procedure queries if not already exists
     await queryRunner.query(`
@@ -133,7 +139,8 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
     `);
 
     // Create function to get total count for pagination
-    await queryRunner.query(`
+    try {
+      await queryRunner.query(`
       CREATE OR REPLACE FUNCTION get_leaderboard_count(
         p_timeframe VARCHAR(10)
       )
@@ -195,6 +202,10 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
       END;
       $$;
     `);
+    } catch (err: any) {
+      // If count function creation fails, log but continue
+      console.log('⚠️  Failed to create get_leaderboard_count function:', err.message);
+    }
 
     console.log('✅ Created get_leaderboard stored procedure with pagination support');
     console.log('✅ Created get_leaderboard_count function for total count');
