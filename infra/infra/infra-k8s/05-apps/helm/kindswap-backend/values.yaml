@@ -1,7 +1,7 @@
 environment: production
 image:
-  repository: ""
-  tag: latest
+  repository: 916994818641.dkr.ecr.us-east-1.amazonaws.com/kindswap-backend
+  tag: bacdd26c287bf130bf6c3be75bec6019b882967b  # Latest working commit
   pullPolicy: Always
 
 replicaCount:

@@ -7,10 +7,10 @@ metadata:
     app: kindswap-backend
     environment: {{ .Values.environment }}
 spec:
-  {{- if typeIs "map" .Values.replicaCount }}
-  replicas: {{ .Values.replicaCount.min }}
-  {{- else }}
+  {{- if typeIs "int" .Values.replicaCount }}
   replicas: {{ .Values.replicaCount }}
+  {{- else }}
+  # HPA will control replicas - do not set spec.replicas when using HPA
   {{- end }}
   selector:
     matchLabels:
