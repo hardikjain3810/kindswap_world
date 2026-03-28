@@ -103,10 +103,27 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
       );
     } else {
       // Table exists - ensure all required columns exist
-      const columns = await queryRunner.getTable('contribution_submissions');
-      if (columns) {
+      const table = await queryRunner.getTable('contribution_submissions');
+      if (table) {
         // Add missing columns if they don't exist
-        const columnNames = columns.columns.map(c => c.name);
+        const columnNames = table.columns.map(c => c.name);
+        
+        if (!columnNames.includes('reviewedBy')) {
+          await queryRunner.addColumn('contribution_submissions', new TableColumn({
+            name: 'reviewedBy',
+            type: 'varchar',
+            length: '88',
+            isNullable: true,
+          }));
+        }
+        
+        if (!columnNames.includes('reviewedAt')) {
+          await queryRunner.addColumn('contribution_submissions', new TableColumn({
+            name: 'reviewedAt',
+            type: 'timestamp',
+            isNullable: true,
+          }));
+        }
         
         if (!columnNames.includes('createdAt')) {
           await queryRunner.addColumn('contribution_submissions', new TableColumn({
@@ -123,6 +140,22 @@ export class CreateContributionSubmissionsTable1739600000000 implements Migratio
             type: 'timestamp',
             default: 'now()',
             isNullable: false,
+          }));
+        }
+        
+        if (!columnNames.includes('pointsAwarded')) {
+          await queryRunner.addColumn('contribution_submissions', new TableColumn({
+            name: 'pointsAwarded',
+            type: 'integer',
+            isNullable: true,
+          }));
+        }
+        
+        if (!columnNames.includes('rejectionReason')) {
+          await queryRunner.addColumn('contribution_submissions', new TableColumn({
+            name: 'rejectionReason',
+            type: 'text',
+            isNullable: true,
           }));
         }
       }
