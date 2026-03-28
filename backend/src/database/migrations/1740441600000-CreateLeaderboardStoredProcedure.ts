@@ -20,10 +20,10 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
     const tables = await queryRunner.query(`
       SELECT tablename FROM pg_tables
       WHERE schemaname = 'public'
-      AND tablename IN ('swap_transactions', 'contribution_submission', 'kns_award_history');
+      AND tablename IN ('swap_transactions', 'contribution_submissions', 'kns_award_history');
     `);
     const existingTables = new Set(tables.map((t: any) => t.tablename));
-    const hasContributionTable = existingTables.has('contribution_submission');
+    const hasContributionTable = existingTables.has('contribution_submissions');
     const hasKnsTable = existingTables.has('kns_award_history');
 
     await queryRunner.query(`
@@ -71,7 +71,7 @@ export class CreateLeaderboardStoredProcedure1740441600000 implements MigrationI
           SELECT
             cs.wallet AS wallet,
             COALESCE(SUM(cs."pointsAwarded"), 0)::BIGINT AS points
-          FROM contribution_submission cs
+          FROM contribution_submissions cs
           WHERE cs.status = 'approved'
             AND (v_date_filter IS NULL OR cs."reviewedAt" >= v_date_filter)
           GROUP BY cs.wallet
